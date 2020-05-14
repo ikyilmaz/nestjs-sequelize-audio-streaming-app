@@ -9,7 +9,7 @@ import {
     Default,
     ForeignKey,
     Length,
-    Table
+    Table,
 } from 'sequelize-typescript';
 import User from '../user/user.model';
 import UserAlbum from '../m2m/useralbum.model';
@@ -19,11 +19,14 @@ import { albumScopes, defaultAlbumScope } from './album.scopes';
     timestamps: true,
     paranoid: true,
     defaultScope: defaultAlbumScope,
-    scopes: albumScopes
+    scopes: albumScopes,
 })
 export default class Album extends BaseModel<Album> {
     /*** @description Album's Title */
-    @Length({ max: 128, msg: 'field \'firstName\' must be between 1 and 128 characters' })
+    @Length({
+        max: 128,
+        msg: "field 'firstName' must be between 1 and 128 characters",
+    })
     @AllowNull(false)
     @Column(STRING(128))
     title!: string;
@@ -46,6 +49,8 @@ export default class Album extends BaseModel<Album> {
     owner!: User;
 
     /*** @description Artists on the track */
-    @BelongsToMany(() => User, { through: { model: () => UserAlbum, unique: false } })
+    @BelongsToMany(() => User, {
+        through: { model: () => UserAlbum, unique: false },
+    })
     artists!: User[];
 }

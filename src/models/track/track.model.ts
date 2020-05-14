@@ -1,13 +1,26 @@
 import { BaseModel } from '../base';
-import { AllowNull, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Length, Table } from 'sequelize-typescript';
-import  Album  from '../album/album.model';
-import  User  from '../user/user.model';
-import  UserTrack  from '../m2m/usertrack.model';
+import {
+    AllowNull,
+    BelongsTo,
+    BelongsToMany,
+    Column,
+    DataType,
+    ForeignKey,
+    Length,
+    Table,
+} from 'sequelize-typescript';
+import Album from '../album/album.model';
+import User from '../user/user.model';
+import UserTrack from '../m2m/usertrack.model';
 
 @Table({ timestamps: true, paranoid: true })
 export default class Track extends BaseModel<Track> {
     /*** @description Track's Title */
-    @Length({ min: 1, max: 128, msg: 'field \'title\' must be between 1 and 128 characters' })
+    @Length({
+        min: 1,
+        max: 128,
+        msg: "field 'title' must be between 1 and 128 characters",
+    })
     @AllowNull(false)
     @Column(DataType.STRING(128))
     title!: string;
@@ -44,8 +57,8 @@ export default class Track extends BaseModel<Track> {
     // ARTISTS (USERS)
 
     /*** @description Users on the album */
-    @BelongsToMany(() => User, { through: { model: () => UserTrack, unique: false } })
+    @BelongsToMany(() => User, {
+        through: { model: () => UserTrack, unique: false },
+    })
     artists!: User[];
-
 }
-

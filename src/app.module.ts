@@ -12,29 +12,27 @@ import Track from './models/track/track.model';
 import Album from './models/album/album.model';
 import Friendship from './models/user/friendship/friendship.model';
 
-
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    SequelizeModule.forRoot({
-      dialect: process.env.DB_DIALECT as 'mysql',
-      username: process.env.DB_USER,
-      database: process.env.DB_NAME,
-      retryDelay: 30,
-      models: [
-        User,
-        Track,
-        Album,
-        UserProfile,
-        Friendship,
+    imports: [
+        ConfigModule.forRoot(),
+        SequelizeModule.forRoot({
+            dialect: process.env.DB_DIALECT as 'mysql',
+            username: process.env.DB_USER,
+            database: process.env.DB_NAME,
+            retryDelay: 30,
+            models: [
+                User,
+                Track,
+                Album,
+                UserProfile,
+                Friendship,
 
-        // Many 2 Many
-        UserTrack,
-        UserAlbum,
-      ],
-    }),
-    UsersModule,
-  ],
+                // Many 2 Many
+                UserTrack,
+                UserAlbum,
+            ],
+        }),
+        UsersModule,
+    ],
 })
-export class AppModule {
-}
+export class AppModule {}

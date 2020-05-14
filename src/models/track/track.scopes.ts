@@ -12,20 +12,38 @@ export const trackScopes: ModelScopeOptions = {
                     {
                         model: User,
                         as: 'owner',
-                        attributes: ['id', 'firstName', 'lastName', 'username', 'photo']
-                    }
-                ]
+                        attributes: [
+                            'id',
+                            'firstName',
+                            'lastName',
+                            'username',
+                            'photo',
+                        ],
+                    },
+                ],
             },
             {
                 model: User,
                 as: 'owner',
-                attributes: ['id', 'firstName', 'lastName', 'username', 'photo']
+                attributes: [
+                    'id',
+                    'firstName',
+                    'lastName',
+                    'username',
+                    'photo',
+                ],
             },
             {
                 model: User,
                 as: 'artists',
-                attributes: ['id', 'firstName', 'lastName', 'username', 'photo']
-            }
-        ]
-    }
+                attributes: [
+                    'id',
+                    'firstName',
+                    'lastName',
+                    'username',
+                    'photo',
+                ],
+            },
+        ],
+    },
 };

@@ -22,5 +22,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'max-len': 130,
     'arrow-parens': true,
+    'indent': 4,
+    'no-empty': "warn",
   },
 };

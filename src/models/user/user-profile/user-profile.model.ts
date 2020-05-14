@@ -1,4 +1,12 @@
-import { Table, Model, Column, ForeignKey, BelongsTo, DataType, Length } from 'sequelize-typescript';
+import {
+    Table,
+    Model,
+    Column,
+    ForeignKey,
+    BelongsTo,
+    DataType,
+    Length,
+} from 'sequelize-typescript';
 import { UUID, UUIDV4 } from 'sequelize';
 import User from '../user.model';
 
@@ -10,7 +18,11 @@ export default class UserProfile extends Model<UserProfile> {
     id!: string;
 
     /*** @description User's biography, optional */
-    @Length({ min: 0, max: 255, msg: 'field \'biography\' must be between 0 and 255 characters' })
+    @Length({
+        min: 0,
+        max: 255,
+        msg: "field 'biography' must be between 0 and 255 characters",
+    })
     @Column(DataType.STRING)
     biography!: string;
 

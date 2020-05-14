@@ -3,13 +3,14 @@ import {
     BeforeSave,
     BeforeUpdate,
     BelongsToMany,
-    Column, Default,
+    Column,
+    Default,
     HasMany,
     Is,
     IsEmail,
     Length,
     Table,
-    Unique
+    Unique,
 } from 'sequelize-typescript';
 import { STRING, SaveOptions, UpdateOptions } from 'sequelize';
 import { BaseModel } from '../base';
@@ -24,21 +25,32 @@ import { userScopes } from './user.scopes';
 @Table({
     timestamps: true,
     paranoid: true,
-    scopes: userScopes
+    scopes: userScopes,
 })
 export default class User extends BaseModel<User> {
     /*** @description User's first name, not required */
-    @Length({ min: 2, max: 32, msg: 'field \'firstName\' must be between 2 and 32 characters' })
+    @Length({
+        min: 2,
+        max: 32,
+        msg: "field 'firstName' must be between 2 and 32 characters",
+    })
     @Column(STRING(32))
     firstName!: string;
 
     /*** @description User's last name, not required */
-    @Length({ min: 2, max: 32, msg: 'field \'lastName\' must be between 2 and 32 characters' })
+    @Length({
+        min: 2,
+        max: 32,
+        msg: "field 'lastName' must be between 2 and 32 characters",
+    })
     @Column(STRING(32))
     lastName!: string;
 
     /*** @description User's username, must be unique */
-    @Is({ args: /^[a-z0-9_]{2,32}$/, msg: 'field \'username\' must be a valid username' })
+    @Is({
+        args: /^[a-z0-9_]{2,32}$/,
+        msg: "field 'username' must be a valid username",
+    })
     @Unique
     @AllowNull(false)
     @Column(STRING(32))
@@ -72,7 +84,9 @@ export default class User extends BaseModel<User> {
     albumsOwned!: Album[];
 
     /***@description Albums which ones are participated by user */
-    @BelongsToMany(() => Album, { through: { model: () => UserAlbum, unique: false } })
+    @BelongsToMany(() => Album, {
+        through: { model: () => UserAlbum, unique: false },
+    })
     albumsParticipated!: Album[];
 
     // TRACKS
@@ -82,21 +96,28 @@ export default class User extends BaseModel<User> {
     tracksOwned!: Track;
 
     /***@description Tracks participated by user */
-    @BelongsToMany(() => Track, { through: { model: () => UserTrack, unique: false } })
+    @BelongsToMany(() => Track, {
+        through: { model: () => UserTrack, unique: false },
+    })
     tracksParticipated!: Track[];
 
     // FRIENDS
 
     /***@description User's friends (users following by the current user) */
-    @BelongsToMany(() => User, { through: { model: () => Friendship, unique: false }, foreignKey: 'friendId' })
+    @BelongsToMany(() => User, {
+        through: { model: () => Friendship, unique: false },
+        foreignKey: 'friendId',
+    })
     friends!: User[];
 
     // FOLLOWERS
 
     /***@description User's followers (users following to the current user)*/
-    @BelongsToMany(() => User, { through: { model: () => Friendship, unique: false }, foreignKey: 'ownerId' })
+    @BelongsToMany(() => User, {
+        through: { model: () => Friendship, unique: false },
+        foreignKey: 'ownerId',
+    })
     followers!: User[];
-
 
     // HOOKS
 
@@ -112,4 +133,3 @@ export default class User extends BaseModel<User> {
         if (user.password) user.password = await hash(user.password, 12);
     }
 }
-

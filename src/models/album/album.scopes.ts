@@ -2,7 +2,7 @@ import User from '../user/user.model';
 import { FindOptions, ModelScopeOptions } from 'sequelize';
 
 export const defaultAlbumScope: FindOptions = {
-    attributes: { exclude: ['deletedAt'] }
+    attributes: { exclude: ['deletedAt'] },
 };
 
 export const albumScopes: ModelScopeOptions = {
@@ -10,14 +10,26 @@ export const albumScopes: ModelScopeOptions = {
         include: [
             {
                 model: User,
-                attributes: ['id', 'firstName', 'lastName', 'username', 'photo'],
-                as: 'owner'
+                attributes: [
+                    'id',
+                    'firstName',
+                    'lastName',
+                    'username',
+                    'photo',
+                ],
+                as: 'owner',
             },
             {
                 model: User,
-                attributes: ['id', 'firstName', 'lastName', 'username', 'photo'],
-                as: 'artists'
-            }
-        ]
-    }
+                attributes: [
+                    'id',
+                    'firstName',
+                    'lastName',
+                    'username',
+                    'photo',
+                ],
+                as: 'artists',
+            },
+        ],
+    },
 };

@@ -5,21 +5,21 @@ import { ValidationPipe } from '@nestjs/common';
 import { UsersModule } from './modules/users/users.module';
 
 (async function() {
-  const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalPipes(new ValidationPipe());
 
-  const options = new DocumentBuilder()
-    .setTitle('Something')
-    .setDescription('The API description')
-    .setVersion('1.0')
-    .build();
+    const options = new DocumentBuilder()
+        .setTitle('Something')
+        .setDescription('The API description')
+        .setVersion('1.0')
+        .build();
 
-  const document = SwaggerModule.createDocument(app, options, {
-    include: [UsersModule]
-  });
+    const document = SwaggerModule.createDocument(app, options, {
+        include: [UsersModule],
+    });
 
-  SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+    await app.listen(3000);
 })();

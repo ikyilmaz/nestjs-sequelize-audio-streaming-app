@@ -1,32 +1,49 @@
 import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+    ApiBadRequestResponse,
+    ApiCreatedResponse,
+    ApiNoContentResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('users')
-@ApiTags("users")
+@ApiTags('users')
 export class UsersController {
-  @Get("/")
-  getMany() {
+    @ApiOkResponse({ description: 'Everything went fine. User found.' })
+    @ApiNotFoundResponse({ description: 'Couldn\'t found any user.' })
+    @Get('/')
+    getMany() {
 
-  }
+    }
 
-  @Post("/")
-  create(@Body() createUserDto: CreateUserDto) {
+    @ApiCreatedResponse({ description: 'Everything went fine. User created.' })
+    @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @Post('/')
+    create(@Body() createUserDto: CreateUserDto) {
 
-  }
+    }
 
-  @Get('/:id')
-  get() {
+    @ApiOkResponse({ description: 'Everything went fine. Users found.' })
+    @ApiNotFoundResponse({ description: 'Couldn\'t found any user.' })
+    @Get('/:id')
+    get() {
 
-  }
+    }
 
-  @Patch("/:id")
-  update() {
+    @ApiOkResponse({ description: 'Everything went fine. User updated.' })
+    @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @Patch('/:id')
+    update() {
 
-  }
+    }
 
-  @Delete("/:id")
-  delete() {
+    @ApiNoContentResponse({ description: 'Everything went fine. User deleted.' })
+    @ApiNotFoundResponse({ description: 'Couldn\'t found any user.' })
+    @Delete('/:id')
+    delete() {
 
-  }
+    }
 }

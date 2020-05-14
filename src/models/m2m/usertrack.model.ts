@@ -1,10 +1,16 @@
 import { BaseModel } from '../base';
-import { AllowNull, BelongsTo, Column, ForeignKey, Table } from 'sequelize-typescript';
-import  User  from '../user/user.model';
+import {
+    AllowNull,
+    BelongsTo,
+    Column,
+    ForeignKey,
+    Table,
+} from 'sequelize-typescript';
+import User from '../user/user.model';
 import { UUID } from 'sequelize';
-import  Track  from '../track/track.model';
+import Track from '../track/track.model';
 
-@Table({ timestamps: true, paranoid: true, tableName: "users_tracks" })
+@Table({ timestamps: true, paranoid: true, tableName: 'users_tracks' })
 export default class UserTrack extends BaseModel<UserTrack> {
     /***@description User id */
     @ForeignKey(() => User)
