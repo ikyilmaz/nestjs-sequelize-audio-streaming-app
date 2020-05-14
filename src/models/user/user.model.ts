@@ -5,7 +5,7 @@ import {
     BelongsToMany,
     Column,
     Default,
-    HasMany,
+    HasMany, HasOne,
     Is,
     IsEmail,
     Length,
@@ -21,6 +21,7 @@ import Track from '../track/track.model';
 import UserTrack from '../m2m/usertrack.model';
 import Friendship from './friendship/friendship.model';
 import { userScopes } from './user.scopes';
+import UserProfile from './user-profile/user-profile.model';
 
 @Table({
     timestamps: true,
@@ -76,6 +77,12 @@ export default class User extends BaseModel<User> {
     photo!: string;
 
     // ASSOCIATIONS
+
+    // PROFILE
+
+    /*** @description User's profile */
+    @HasOne(() => UserProfile)
+    profile!: UserProfile;
 
     // ALBUMS
 

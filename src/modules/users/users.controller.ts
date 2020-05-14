@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Response } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
     ApiBadRequestResponse, ApiBearerAuth,
     ApiCreatedResponse, ApiForbiddenResponse,
     ApiNoContentResponse,
     ApiNotFoundResponse,
-    ApiOkResponse,
+    ApiOkResponse, ApiResponse,
     ApiTags,
 } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -17,7 +17,6 @@ import { SendResponse } from '../../helpers/utils/send-response';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-
     constructor(public $usersService: UsersService) {
     }
 
@@ -33,8 +32,8 @@ export class UsersController {
     @ApiForbiddenResponse({ description: '-' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Post('/')
-    create(@Body() createUserDto: CreateUserDto) {
-
+    async create(@Body() createUserDto: CreateUserDto) {
+        return SendResponse(await catchAsync(this.$usersService.create(createUserDto)));
     }
 
     @ApiOkResponse({ description: 'Everything went fine. Users found.' })
@@ -49,8 +48,8 @@ export class UsersController {
     @ApiForbiddenResponse({ description: '-' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Patch('/:id')
-    update(@Param() params: ParamIdDto, @Body() updateUserDto: UpdateUserDto) {
-
+    async update(@Param() params: ParamIdDto, @Body() updateUserDto: UpdateUserDto) {
+        await catchAsync(this.$usersService.update(params.id, updateUserDto));
     }
 
     @ApiBearerAuth()
@@ -58,7 +57,7 @@ export class UsersController {
     @ApiForbiddenResponse({ description: '-' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @Delete('/:id')
-    delete(@Param() params: ParamIdDto) {
-
+    async delete(@Param() params: ParamIdDto) {
+        await catchAsync(this.$usersService.delete(params.id));
     }
 }

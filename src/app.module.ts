@@ -19,6 +19,7 @@ import Friendship from './models/user/friendship/friendship.model';
             dialect: process.env.DB_DIALECT as 'mysql',
             username: process.env.DB_USER,
             database: process.env.DB_NAME,
+            sync: {force: true},
             retryDelay: 30,
             models: [
                 User,
