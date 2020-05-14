@@ -8,7 +8,7 @@ import {
     BadRequestException,
     Res,
     UnauthorizedException,
-    Patch,
+    Patch, UseGuards, InternalServerErrorException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { TokenService } from '@app/token';
@@ -28,11 +28,13 @@ import {
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { AuthRequiredGuard } from '../../guards/auth-required.guard';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
     constructor(private readonly $authService: AuthService, private readonly $tokenService: TokenService) {
+
     }
 
     /**
@@ -85,12 +87,14 @@ export class AuthController {
      *  @permissions authenticated users
      *  @statusCodes 200, 401, 400 */
     @ApiOperation({ summary: 'UPDATE PASSWORD' })
+    @ApiBearerAuth()
     @ApiOkResponse({ description: 'Password updated.' })
     @ApiUnauthorizedResponse({ description: 'Auth required.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @UseGuards(AuthRequiredGuard)
     @Patch('/update-password')
     async updatePassword() {
-
+        throw new InternalServerErrorException()
     }
 
     /**
@@ -98,12 +102,14 @@ export class AuthController {
      *  @permissions authenticated users
      *  @statusCodes 200, 401, 400 */
     @ApiOperation({ summary: 'UPDATE EMAIL' })
+    @ApiBearerAuth()
     @ApiOkResponse({ description: 'Verification email sent.' })
     @ApiUnauthorizedResponse({ description: 'Auth required.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @UseGuards(AuthRequiredGuard)
     @Patch('/update-email')
     async updateEmail() {
-
+        throw new InternalServerErrorException()
     }
 
     /**
@@ -111,12 +117,14 @@ export class AuthController {
      *  @permissions authenticated users
      *  @statusCodes 200, 401, 400 */
     @ApiOperation({ summary: 'UPDATE USER' })
+    @ApiBearerAuth()
     @ApiOkResponse({ description: 'User updated.' })
     @ApiUnauthorizedResponse({ description: 'Auth required.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @UseGuards(AuthRequiredGuard)
     @Patch('/update')
     async updateMe() {
-
+        throw new InternalServerErrorException()
     }
 
     /**
@@ -127,7 +135,7 @@ export class AuthController {
     @ApiOkResponse({ description: 'Current user found or not.' })
     @Get('/current-user')
     async getCurrentUser() {
-
+        throw new InternalServerErrorException()
     }
 
     private async createAndSendToken(user: User, res: Response) {
