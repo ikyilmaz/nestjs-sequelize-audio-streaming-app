@@ -17,6 +17,8 @@ import UserAlbum from './models/m2m/useralbum.model';
 import Track from './models/track/track.model';
 import Album from './models/album/album.model';
 import Friendship from './models/user/friendship/friendship.model';
+import { CurrentUserModule } from '@app/current-user';
+import { TokenModule } from '@app/token';
 
 @Module({
     imports: [
@@ -43,8 +45,8 @@ import Friendship from './models/user/friendship/friendship.model';
         UsersModule,
         AlbumsModule,
         AuthModule,
-    ],
-    controllers: [AuthController],
-    providers: [AuthService],
+        CurrentUserModule,
+        TokenModule
+    ]
 })
 export class AppModule {}

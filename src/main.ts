@@ -5,9 +5,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { UsersModule } from './modules/users/users.module';
 import { AlbumsModule } from './modules/albums/albums.module';
 import * as chalk from 'chalk';
+import { AuthModule } from './modules/auth/auth.module';
 
 (async function() {
-    const app = await NestFactory.create(AppModule, { logger: false });
+    const app = await NestFactory.create(AppModule, { });
 
     app.useGlobalPipes(new ValidationPipe());
 
@@ -20,7 +21,7 @@ import * as chalk from 'chalk';
         .build();
 
     const document = SwaggerModule.createDocument(app, options, {
-        include: [UsersModule, AlbumsModule],
+        include: [UsersModule, AlbumsModule, AuthModule],
     });
 
     SwaggerModule.setup('api', app, document);
