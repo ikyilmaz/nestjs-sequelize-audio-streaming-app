@@ -7,6 +7,9 @@ import { UsersModule } from './modules/users/users.module';
 import { AlbumsController } from './modules/albums/albums.controller';
 import { AlbumsService } from './modules/albums/albums.service';
 import { AlbumsModule } from './modules/albums/albums.module';
+import { AuthController } from './modules/auth/auth.controller';
+import { AuthService } from './modules/auth/auth.service';
+import { AuthModule } from './modules/auth/auth.module';
 import User from './models/user/user.model';
 import UserProfile from './models/user/user-profile/user-profile.model';
 import UserTrack from './models/m2m/usertrack.model';
@@ -22,7 +25,8 @@ import Friendship from './models/user/friendship/friendship.model';
             dialect: process.env.DB_DIALECT as 'mysql',
             username: process.env.DB_USER,
             database: process.env.DB_NAME,
-            sync: {force: true},
+            sync: { force: true, logging: true },
+            synchronize:true,
             retryDelay: 30,
             models: [
                 User,
@@ -38,8 +42,10 @@ import Friendship from './models/user/friendship/friendship.model';
         }),
         UsersModule,
         AlbumsModule,
+        AuthModule,
     ],
-    controllers: [AlbumsController],
-    providers: [AlbumsService],
+    controllers: [AuthController],
+    providers: [AuthService],
 })
-export class AppModule {}
+export class AppModule {
+}

@@ -16,7 +16,7 @@ import {
     ApiCreatedResponse, ApiForbiddenResponse,
     ApiNoContentResponse,
     ApiNotFoundResponse,
-    ApiOkResponse,
+    ApiOkResponse, ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -36,6 +36,7 @@ export class UsersController {
     /**
      *  @description Returns users
      *  @statusCodes 200, 404, 400 */
+    @ApiOperation({ summary: 'GET MANY USER' })
     @ApiOkResponse({ description: 'Users found.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
@@ -48,6 +49,7 @@ export class UsersController {
      * @description Creates user and returns it
      * @permissions admins
      * @statusCodes 201, 400 */
+    @ApiOperation({ summary: 'CREATE USER' })
     @ApiBearerAuth()
     @ApiCreatedResponse({ description: 'User created.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
@@ -60,6 +62,7 @@ export class UsersController {
     /**
      *  @description Returns the user with the specified id
      *  @statusCodes 200, 404, 400 */
+    @ApiOperation({ summary: 'GET USER' })
     @ApiOkResponse({ description: 'User found.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
@@ -72,6 +75,7 @@ export class UsersController {
      *  @description Updates user with the specified id
      *  @permissions admins
      *  @statusCodes 201, 400 */
+    @ApiOperation({ summary: 'UPDATE USER' })
     @ApiBearerAuth()
     @ApiOkResponse({ description: 'User updated.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
@@ -85,6 +89,7 @@ export class UsersController {
      *  @description Deletes user with the specified id
      *  @permissions admins
      *  @statusCodes 204, 404, 400 */
+    @ApiOperation({ summary: 'DELETE USER' })
     @ApiBearerAuth()
     @ApiNoContentResponse({ description: 'User deleted.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })

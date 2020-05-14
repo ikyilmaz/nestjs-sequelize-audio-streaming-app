@@ -77,7 +77,7 @@ export default class User extends BaseModel<User> {
     photo!: string;
 
     /*** @description takes timestamps when the password changes  */
-    @Column(DataType.DATE)
+    @Column
     passwordChangedAt!: Date;
 
     // ASSOCIATIONS
