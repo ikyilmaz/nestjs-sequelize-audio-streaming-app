@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Response } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Response } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
     ApiBadRequestResponse, ApiBearerAuth,
     ApiCreatedResponse, ApiForbiddenResponse,
     ApiNoContentResponse,
     ApiNotFoundResponse,
-    ApiOkResponse, ApiResponse,
+    ApiOkResponse, ApiQuery,
     ApiTags,
 } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -13,22 +13,24 @@ import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { UsersService } from './users.service';
 import { catchAsync } from '../../helpers/utils/catch-async';
 import { SendResponse } from '../../helpers/utils/send-response';
+import { PaginateQueryDto } from '../../helpers/common-dtos/paginate-query.dto';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
     constructor(public $usersService: UsersService) {
+
     }
 
-    @ApiOkResponse({ description: 'Everything went fine. User found.' })
+    @ApiOkResponse({ description: 'User found.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @Get('/')
-    async getMany() {
-        return SendResponse(await catchAsync(this.$usersService.getMany()));
+    async getMany(@Query() query: PaginateQueryDto) {
+        return SendResponse(await catchAsync(this.$usersService.getMany(query)));
     }
 
     @ApiBearerAuth()
-    @ApiCreatedResponse({ description: 'Everything went fine. User created.' })
+    @ApiCreatedResponse({ description: 'User created.' })
     @ApiForbiddenResponse({ description: '-' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Post('/')
@@ -36,7 +38,7 @@ export class UsersController {
         return SendResponse(await catchAsync(this.$usersService.create(createUserDto)));
     }
 
-    @ApiOkResponse({ description: 'Everything went fine. Users found.' })
+    @ApiOkResponse({ description: 'Users found.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @Get('/:id')
     async get(@Param() params: ParamIdDto) {
@@ -44,7 +46,7 @@ export class UsersController {
     }
 
     @ApiBearerAuth()
-    @ApiOkResponse({ description: 'Everything went fine. User updated.' })
+    @ApiOkResponse({ description: 'User updated.' })
     @ApiForbiddenResponse({ description: '-' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Patch('/:id')
@@ -53,7 +55,7 @@ export class UsersController {
     }
 
     @ApiBearerAuth()
-    @ApiNoContentResponse({ description: 'Everything went fine. User deleted.' })
+    @ApiNoContentResponse({ description: 'User deleted.' })
     @ApiForbiddenResponse({ description: '-' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @Delete('/:id')

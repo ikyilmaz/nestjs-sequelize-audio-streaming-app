@@ -1,9 +1,19 @@
 {
-  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@app/token/(.*)": "<rootDir>/../libs/token/src/$1",
+    "@app/token": "<rootDir>/../libs/token/src",
+    "@app/current-user/(.*)": "<rootDir>/../libs/current-user/src/$1",
+    "@app/current-user": "<rootDir>/../libs/current-user/src"
   }
 }

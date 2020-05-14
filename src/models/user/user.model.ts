@@ -3,7 +3,7 @@ import {
     BeforeSave,
     BeforeUpdate,
     BelongsToMany,
-    Column,
+    Column, DataType,
     Default,
     HasMany, HasOne,
     Is,
@@ -75,6 +75,10 @@ export default class User extends BaseModel<User> {
     @Default('default.jpeg')
     @Column(STRING(128))
     photo!: string;
+
+    /*** @description takes timestamps when the password changes  */
+    @Column(DataType.DATE)
+    passwordChangedAt!: Date;
 
     // ASSOCIATIONS
 

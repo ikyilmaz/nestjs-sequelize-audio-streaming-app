@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import UserProfile from '../../models/user/user-profile/user-profile.model';
 import { filterObject } from '../../helpers/utils/filter-object';
+import { paginate } from '../../helpers/utils/paginate';
 
 @Injectable()
 export class UsersService {
@@ -12,8 +13,8 @@ export class UsersService {
 
     }
 
-    getMany = () => {
-        return this.$user.scope('public').findAll();
+    getMany = (query: Pick<any, any>) => {
+        return this.$user.scope('public').findAll({...paginate(query)});
     };
 
     get = (id: string) => {
