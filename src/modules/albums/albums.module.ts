@@ -1,8 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AlbumsController } from './albums.controller';
 import { AlbumsService } from './albums.service';
+import { SequelizeModule } from '@nestjs/sequelize';
+import Album from '../../models/album/album.model';
+import User from '../../models/user/user.model';
+import { TokenModule } from '@app/token';
+import UserAlbum from '../../models/m2m/useralbum.model';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
+    imports: [
+        SequelizeModule.forFeature([User, Album, UserAlbum]),
+        TokenModule
+    ],
     controllers: [AlbumsController],
     providers: [AlbumsService],
 })
