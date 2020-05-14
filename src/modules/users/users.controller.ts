@@ -35,8 +35,7 @@ export class UsersController {
 
     /**
      *  @description Returns users
-     *  @statusCodes 200, 404, 400
-     * */
+     *  @statusCodes 200, 404, 400 */
     @ApiOkResponse({ description: 'Users found.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
@@ -46,9 +45,9 @@ export class UsersController {
     }
 
     /**
-     * @description Creates user and returns it, admins only
-     * @statusCodes 201, 400
-     * */
+     * @description Creates user and returns it
+     * @permissions admins
+     * @statusCodes 201, 400 */
     @ApiBearerAuth()
     @ApiCreatedResponse({ description: 'User created.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
@@ -60,8 +59,7 @@ export class UsersController {
 
     /**
      *  @description Returns the user with the specified id
-     *  @statusCodes 200, 404, 400
-     * */
+     *  @statusCodes 200, 404, 400 */
     @ApiOkResponse({ description: 'User found.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
@@ -71,9 +69,9 @@ export class UsersController {
     }
 
     /**
-     *  @description Updates user with the specified id, admins only
-     *  @statusCodes 201, 400,
-     *  */
+     *  @description Updates user with the specified id
+     *  @permissions admins
+     *  @statusCodes 201, 400 */
     @ApiBearerAuth()
     @ApiOkResponse({ description: 'User updated.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
@@ -84,9 +82,9 @@ export class UsersController {
     }
 
     /**
-     *  @description Deletes user with the specified id, admins only
-     *  @statusCodes 204, 404, 400
-     *  */
+     *  @description Deletes user with the specified id
+     *  @permissions admins
+     *  @statusCodes 204, 404, 400 */
     @ApiBearerAuth()
     @ApiNoContentResponse({ description: 'User deleted.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
