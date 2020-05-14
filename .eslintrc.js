@@ -20,7 +20,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    'max-len': 130,
+    'max-len': 140,
     'arrow-parens': true,
     'indent': 4,
     'no-empty': "warn",
