@@ -9,12 +9,10 @@ import { paginate } from '../../helpers/utils/paginate';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User) private $user: typeof User) {
-
-    }
+    constructor(@InjectModel(User) private $user: typeof User) {}
 
     getMany = (query: Pick<any, any>) => {
-        return this.$user.scope('public').findAll({...paginate(query)});
+        return this.$user.scope('public').findAll({ ...paginate(query) });
     };
 
     get = (id: string) => {

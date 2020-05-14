@@ -6,7 +6,9 @@ import {
     ApiForbiddenResponse,
     ApiNoContentResponse,
     ApiNotFoundResponse,
-    ApiOkResponse, ApiOperation, ApiTags,
+    ApiOkResponse,
+    ApiOperation,
+    ApiTags,
 } from '@nestjs/swagger';
 import { PaginateQueryDto } from '../../helpers/common-dtos/paginate-query.dto';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
@@ -15,10 +17,7 @@ import { AlbumsService } from './albums.service';
 @ApiTags('albums')
 @Controller('albums')
 export class AlbumsController {
-
-    constructor(public $albumsService: AlbumsService) {
-
-    }
+    constructor(public $albumsService: AlbumsService) {}
 
     /**
      *  @description Returns albums
@@ -28,9 +27,7 @@ export class AlbumsController {
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Get('/')
-    async getMany(@Query() query: PaginateQueryDto) {
-
-    }
+    async getMany(@Query() query: PaginateQueryDto) {}
 
     /**
      * @description Creates album and returns it
@@ -40,9 +37,7 @@ export class AlbumsController {
     @ApiCreatedResponse({ description: 'Album created.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Post()
-    create() {
-
-    }
+    create() {}
 
     /**
      *  @description Returns the album with the specified id
@@ -52,9 +47,7 @@ export class AlbumsController {
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Get('/:id')
-    async get(@Param() params: ParamIdDto) {
-
-    }
+    async get(@Param() params: ParamIdDto) {}
 
     /**
      *  @description Updates album with the specified id
@@ -66,9 +59,7 @@ export class AlbumsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Patch('/:id')
-    async update(@Param() params: ParamIdDto) {
-
-    }
+    async update(@Param() params: ParamIdDto) {}
 
     /**
      *  @description Deletes user with the specified id
@@ -82,7 +73,5 @@ export class AlbumsController {
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @HttpCode(HttpStatus.NO_CONTENT)
     @Delete('/:id')
-    async delete(@Param() params: ParamIdDto) {
-
-    }
+    async delete(@Param() params: ParamIdDto) {}
 }

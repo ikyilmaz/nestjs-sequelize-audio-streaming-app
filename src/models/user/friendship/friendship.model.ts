@@ -1,11 +1,5 @@
 import { BaseModel } from '../../base';
-import {
-    AllowNull,
-    BelongsTo,
-    Column,
-    ForeignKey,
-    Table,
-} from 'sequelize-typescript';
+import { AllowNull, BelongsTo, Column, ForeignKey, Table } from 'sequelize-typescript';
 import User from '../user.model';
 import { UUID } from 'sequelize';
 

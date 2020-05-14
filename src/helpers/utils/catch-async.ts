@@ -1,8 +1,8 @@
-import { HttpStatus, HttpException } from "@nestjs/common";
+import { HttpStatus, HttpException } from '@nestjs/common';
 
-export const catchAsync = function <T>(promise: Promise<T>, statusCode?: HttpStatus ) {
+export const catchAsync = function<T>(promise: Promise<T>, statusCode?: HttpStatus) {
     return promise.catch(err => {
-        if (!statusCode) statusCode = HttpStatus.BAD_REQUEST
+        if (!statusCode) statusCode = HttpStatus.BAD_REQUEST;
 
         throw new HttpException(err, statusCode);
     });

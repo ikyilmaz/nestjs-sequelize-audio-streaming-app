@@ -1,16 +1,6 @@
 import { BaseModel } from '../base';
 import { STRING, UUID, JSON } from 'sequelize';
-import {
-    AllowNull,
-    BelongsTo,
-    BelongsToMany,
-    Column,
-    DataType,
-    Default,
-    ForeignKey,
-    Length,
-    Table,
-} from 'sequelize-typescript';
+import { AllowNull, BelongsTo, BelongsToMany, Column, DataType, Default, ForeignKey, Length, Table } from 'sequelize-typescript';
 import User from '../user/user.model';
 import UserAlbum from '../m2m/useralbum.model';
 import { albumScopes, defaultAlbumScope } from './album.scopes';

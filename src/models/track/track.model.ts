@@ -1,14 +1,5 @@
 import { BaseModel } from '../base';
-import {
-    AllowNull,
-    BelongsTo,
-    BelongsToMany,
-    Column,
-    DataType,
-    ForeignKey,
-    Length,
-    Table,
-} from 'sequelize-typescript';
+import { AllowNull, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Length, Table } from 'sequelize-typescript';
 import Album from '../album/album.model';
 import User from '../user/user.model';
 import UserTrack from '../m2m/usertrack.model';

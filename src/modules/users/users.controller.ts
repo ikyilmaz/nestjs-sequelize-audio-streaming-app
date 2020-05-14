@@ -1,22 +1,14 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpCode,
-    HttpStatus,
-    Param,
-    Patch,
-    Post,
-    Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
-    ApiBadRequestResponse, ApiBearerAuth,
-    ApiCreatedResponse, ApiForbiddenResponse,
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiCreatedResponse,
+    ApiForbiddenResponse,
     ApiNoContentResponse,
     ApiNotFoundResponse,
-    ApiOkResponse, ApiOperation,
+    ApiOkResponse,
+    ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -29,9 +21,7 @@ import { PaginateQueryDto } from '../../helpers/common-dtos/paginate-query.dto';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-    constructor(public $usersService: UsersService) {
-
-    }
+    constructor(public $usersService: UsersService) {}
 
     /**
      *  @description Returns users

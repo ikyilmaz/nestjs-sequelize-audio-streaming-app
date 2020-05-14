@@ -1,12 +1,4 @@
-import {
-    Table,
-    Model,
-    Column,
-    ForeignKey,
-    BelongsTo,
-    DataType,
-    Length,
-} from 'sequelize-typescript';
+import { Table, Model, Column, ForeignKey, BelongsTo, DataType, Length } from 'sequelize-typescript';
 import { UUID, UUIDV4 } from 'sequelize';
 import User from '../user.model';
 

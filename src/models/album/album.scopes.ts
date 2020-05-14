@@ -10,24 +10,12 @@ export const albumScopes: ModelScopeOptions = {
         include: [
             {
                 model: User,
-                attributes: [
-                    'id',
-                    'firstName',
-                    'lastName',
-                    'username',
-                    'photo',
-                ],
+                attributes: ['id', 'firstName', 'lastName', 'username', 'photo'],
                 as: 'owner',
             },
             {
                 model: User,
-                attributes: [
-                    'id',
-                    'firstName',
-                    'lastName',
-                    'username',
-                    'photo',
-                ],
+                attributes: ['id', 'firstName', 'lastName', 'username', 'photo'],
                 as: 'artists',
             },
         ],

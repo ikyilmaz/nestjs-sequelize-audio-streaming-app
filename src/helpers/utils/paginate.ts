@@ -7,4 +7,4 @@ export const paginate = (query: Pick<any, any>, maxLimit: number = 50) => {
     const offset = page * limit - limit;
 
     return { offset, limit };
-}
+};

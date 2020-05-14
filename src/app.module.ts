@@ -26,7 +26,7 @@ import Friendship from './models/user/friendship/friendship.model';
             username: process.env.DB_USER,
             database: process.env.DB_NAME,
             sync: { force: true, logging: true },
-            synchronize:true,
+            synchronize: true,
             retryDelay: 30,
             models: [
                 User,
@@ -47,5 +47,4 @@ import Friendship from './models/user/friendship/friendship.model';
     controllers: [AuthController],
     providers: [AuthService],
 })
-export class AppModule {
-}
+export class AppModule {}

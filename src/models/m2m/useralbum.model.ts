@@ -1,12 +1,6 @@
 import { BaseModel } from '../base';
 import { UUID } from 'sequelize';
-import {
-    AllowNull,
-    BelongsTo,
-    Column,
-    ForeignKey,
-    Table,
-} from 'sequelize-typescript';
+import { AllowNull, BelongsTo, Column, ForeignKey, Table } from 'sequelize-typescript';
 import User from '../user/user.model';
 import Album from '../album/album.model';
 

@@ -19,8 +19,7 @@ export class AuthRequiredGuard implements CanActivate {
 
         let token: string;
 
-        const isAuthHeaderAndIsStatsWithBearer =
-            req.headers.authorization && req.headers.authorization.startsWith('Bearer ');
+        const isAuthHeaderAndIsStatsWithBearer = req.headers.authorization && req.headers.authorization.startsWith('Bearer ');
         const cookiesHaveJwt = req.cookies && req.cookies.jwt;
 
         if (isAuthHeaderAndIsStatsWithBearer) token = req.headers.authorization.split(' ')[1];
