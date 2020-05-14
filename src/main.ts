@@ -9,6 +9,8 @@ import { UsersModule } from './modules/users/users.module';
 
     app.useGlobalPipes(new ValidationPipe());
 
+    app.setGlobalPrefix('api/v1');
+
     const options = new DocumentBuilder()
         .setTitle('Something')
         .setDescription('The API description')
