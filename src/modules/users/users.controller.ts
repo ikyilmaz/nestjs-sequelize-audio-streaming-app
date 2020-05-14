@@ -1,11 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Response } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Param,
+    Patch,
+    Post,
+    Query,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
     ApiBadRequestResponse, ApiBearerAuth,
     ApiCreatedResponse, ApiForbiddenResponse,
     ApiNoContentResponse,
     ApiNotFoundResponse,
-    ApiOkResponse, ApiQuery,
+    ApiOkResponse,
     ApiTags,
 } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,42 +33,66 @@ export class UsersController {
 
     }
 
-    @ApiOkResponse({ description: 'User found.' })
+    /**
+     *  @description Returns users
+     *  @statusCodes 200, 404, 400
+     * */
+    @ApiOkResponse({ description: 'Users found.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
+    @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Get('/')
     async getMany(@Query() query: PaginateQueryDto) {
         return SendResponse(await catchAsync(this.$usersService.getMany(query)));
     }
 
+    /**
+     * @description Creates user and returns it, admins only
+     * @statusCodes 201, 400
+     * */
     @ApiBearerAuth()
     @ApiCreatedResponse({ description: 'User created.' })
-    @ApiForbiddenResponse({ description: '-' })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Post('/')
     async create(@Body() createUserDto: CreateUserDto) {
         return SendResponse(await catchAsync(this.$usersService.create(createUserDto)));
     }
 
-    @ApiOkResponse({ description: 'Users found.' })
+    /**
+     *  @description Returns the user with the specified id
+     *  @statusCodes 200, 404, 400
+     * */
+    @ApiOkResponse({ description: 'User found.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
+    @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Get('/:id')
     async get(@Param() params: ParamIdDto) {
         return SendResponse(await catchAsync(this.$usersService.get(params.id)));
     }
 
+    /**
+     *  @description Updates user with the specified id, admins only
+     *  @statusCodes 201, 400,
+     *  */
     @ApiBearerAuth()
     @ApiOkResponse({ description: 'User updated.' })
-    @ApiForbiddenResponse({ description: '-' })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Patch('/:id')
     async update(@Param() params: ParamIdDto, @Body() updateUserDto: UpdateUserDto) {
         await catchAsync(this.$usersService.update(params.id, updateUserDto));
     }
 
+    /**
+     *  @description Deletes user with the specified id, admins only
+     *  @statusCodes 204, 404, 400
+     *  */
     @ApiBearerAuth()
     @ApiNoContentResponse({ description: 'User deleted.' })
-    @ApiForbiddenResponse({ description: '-' })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
+    @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @HttpCode(HttpStatus.NO_CONTENT)
     @Delete('/:id')
     async delete(@Param() params: ParamIdDto) {
         await catchAsync(this.$usersService.delete(params.id));
