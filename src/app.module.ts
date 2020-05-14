@@ -4,6 +4,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersController } from './modules/users/users.controller';
 import { UsersService } from './modules/users/users.service';
 import { UsersModule } from './modules/users/users.module';
+import { AlbumsController } from './modules/albums/albums.controller';
+import { AlbumsService } from './modules/albums/albums.service';
+import { AlbumsModule } from './modules/albums/albums.module';
 import User from './models/user/user.model';
 import UserProfile from './models/user/user-profile/user-profile.model';
 import UserTrack from './models/m2m/usertrack.model';
@@ -34,6 +37,9 @@ import Friendship from './models/user/friendship/friendship.model';
             ],
         }),
         UsersModule,
+        AlbumsModule,
     ],
+    controllers: [AlbumsController],
+    providers: [AlbumsService],
 })
 export class AppModule {}
