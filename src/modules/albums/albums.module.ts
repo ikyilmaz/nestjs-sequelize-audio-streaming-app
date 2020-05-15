@@ -4,13 +4,13 @@ import { AlbumsService } from './albums.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import Album from '../../models/album/album.model';
 import User from '../../models/user/user.model';
-import { TokenModule } from '@app/token';
+import { AlbumsRelatedController } from './albums-related.controller';
 
 @Module({
     imports: [
         SequelizeModule.forFeature([User, Album])
     ],
-    controllers: [AlbumsController],
+    controllers: [AlbumsController, AlbumsRelatedController],
     providers: [AlbumsService],
 })
 export class AlbumsModule {}

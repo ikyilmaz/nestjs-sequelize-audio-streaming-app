@@ -69,36 +69,12 @@ export class AlbumsController {
     @ApiOperation({ summary: 'CREATE ALBUM' })
     @ApiBearerAuth()
     @ApiCreatedResponse({ description: 'Album created.' })
-    @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @UseGuards(AuthRequiredGuard)
     @Post('/')
     async create(@Body() createAlbumDto: CreateAlbumDto, @UploadedFile() file) {
         return SendResponse(await catchAsync(this.$albumsService.create(filterObject(createAlbumDto, ['ownerId', 'photo']))));
-    }
-
-    /**
-     * --> UPDATE ALBUM PHOTO
-     * @description Creates an album and returns it
-     * @permissions authenticated users
-     * @statusCodes 201, 400 */
-    @ApiOperation({ summary: 'CREATE ALBUM' })
-    @ApiBearerAuth()
-    @ApiCreatedResponse({ description: 'Album created.' })
-    @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
-    @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @UseGuards(AuthRequiredGuard)
-    @UseInterceptors(FileInterceptor('photo', {
-        storage: multer.memoryStorage(),
-        fileFilter: (req, file, cb) => {
-            if (file.mimetype.startsWith('image')) return cb(null, true);
-            cb(new Error('Not an image! Please upload only images.'), false);
-        },
-    }))
-    @Post('/:id/update-photo')
-    async updateAlbumPhoto(@Param() params: ParamIdDto, @UploadedFile() file) {
-        if (!file) throw new BadRequestException('please specify the file');
-        return SendResponse(await catchAsync(this.$albumsService.updateAlbumPhoto(params.id, file)));
     }
 
     /**
@@ -118,11 +94,10 @@ export class AlbumsController {
      *  --> UPDATE ALBUM
      *  @description Updates an album with the specified id
      *  @permissions authenticated users, owners
-     *  @statusCodes 201, 400 */
+     *  @statusCodes 200, 403, 400, 404 */
     @ApiOperation({ summary: 'UPDATE ALBUM' })
     @ApiBearerAuth()
     @ApiOkResponse({ description: 'User updated.' })
-    @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
     @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the album.' })
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
@@ -130,12 +105,7 @@ export class AlbumsController {
     @UseGuards(AuthRequiredGuard, IsOwnerGuard)
     @Patch('/:id')
     async update(@Param() params: ParamIdDto, @Body() updateAlbumDto: UpdateAlbumDto, @UploadedFile() file) {
-        await catchAsync(
-            this.$albumsService.update(
-                params.id,
-                filterObject(updateAlbumDto, ['ownerId', 'photo']), // Removes the unwanted fields
-            ),
-        );
+        await catchAsync(this.$albumsService.update(params.id, filterObject(updateAlbumDto, ['ownerId', 'photo'])));
     }
 
     /**
@@ -146,7 +116,6 @@ export class AlbumsController {
     @ApiOperation({ summary: 'DELETE ALBUM' })
     @ApiBearerAuth()
     @ApiNoContentResponse({ description: 'User deleted.' })
-    @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
     @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the album.' })
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
