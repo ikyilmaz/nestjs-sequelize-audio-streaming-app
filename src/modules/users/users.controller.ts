@@ -41,6 +41,7 @@ export class UsersController {
     }
 
     /**
+     *  --> GET MANY USER
      *  @description Returns users
      *  @statusCodes 200, 404, 400 */
     @ApiOperation({ summary: 'GET MANY USER' })
@@ -53,6 +54,7 @@ export class UsersController {
     }
 
     /**
+     *  --> CREATE USER
      * @description Creates user and returns it
      * @permissions admins and moderators
      * @statusCodes 201, 400 */
@@ -69,6 +71,7 @@ export class UsersController {
     }
 
     /**
+     *  --> GET ONE USER BY ID
      *  @description Returns the user with the specified id
      *  @statusCodes 200, 404, 400 */
     @ApiOperation({ summary: 'GET USER' })
@@ -81,6 +84,7 @@ export class UsersController {
     }
 
     /**
+     *  --> UPDATE ONE USER BY ID
      *  @description Updates user with the specified id
      *  @permissions admins and moderators
      *  @statusCodes 201, 400 */
@@ -97,6 +101,7 @@ export class UsersController {
     }
 
     /**
+     *  --> DELETE ONE USER BY ID
      *  @description Deletes user with the specified id
      *  @permissions admins and moderators
      *  @statusCodes 204, 404, 400 */

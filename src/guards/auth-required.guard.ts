@@ -9,7 +9,9 @@ import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthRequiredGuard implements CanActivate {
-    constructor(private $currentUserService: CurrentUserService, @InjectModel(User) private $user: typeof User) {}
+    constructor(private $currentUserService: CurrentUserService, @InjectModel(User) private $user: typeof User) {
+    }
+
     async canActivate(context: ExecutionContext) {
         console.log('AuthRequired START');
 
@@ -26,10 +28,8 @@ export class AuthRequiredGuard implements CanActivate {
 
         if (!token) return false;
 
-        const decoded = await catchAsync(
-            //@ts-ignore TODO
-            promisify(jwt.verify)(token, process.env.JWT_SECRET) as Promise<{ id: string; iat: string }>,
-        );
+        //@ts-ignore
+        const decoded = await catchAsync(promisify(jwt.verify)(token, process.env.JWT_SECRET) as Promise<{ id: string; iat: string }>);
 
         if (!decoded.id) return false;
 

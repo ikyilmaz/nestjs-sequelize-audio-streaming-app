@@ -20,10 +20,8 @@ export class IsOwnerGuard implements CanActivate {
         if (!doc) throw new NotFoundException();
 
         // @ts-ignore
-        const isOwner = this.$currentUserService.getUser.id == doc.userId;
+        const isOwner = this.$currentUserService.getUser.id == doc.ownerId;
         const isAdmin = this.$currentUserService.getUser.role == 'admin';
-
-        console.log((isOwner || isAdmin))
 
         return (isOwner || isAdmin);
     }
