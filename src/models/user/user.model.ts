@@ -35,7 +35,7 @@ export default class User extends BaseModel<User> {
     @Length({
         min: 2,
         max: 32,
-        msg: "field 'firstName' must be between 2 and 32 characters",
+        msg: 'field \'firstName\' must be between 2 and 32 characters',
     })
     @Column(STRING(32))
     firstName!: string;
@@ -44,7 +44,7 @@ export default class User extends BaseModel<User> {
     @Length({
         min: 2,
         max: 32,
-        msg: "field 'lastName' must be between 2 and 32 characters",
+        msg: 'field \'lastName\' must be between 2 and 32 characters',
     })
     @Column(STRING(32))
     lastName!: string;
@@ -52,7 +52,7 @@ export default class User extends BaseModel<User> {
     /*** @description User's username, must be unique */
     @Is({
         args: /^[a-z0-9_]{2,32}$/,
-        msg: "field 'username' must be a valid username",
+        msg: 'field \'username\' must be a valid username',
     })
     @Unique
     @AllowNull(false)
@@ -70,6 +70,13 @@ export default class User extends BaseModel<User> {
     @AllowNull(false)
     @Column(STRING(128))
     password!: string;
+
+    /**
+     *  @description User's role
+     *  @default user */
+    @Default('user')
+    @Column(DataType.ENUM('admin', 'moderator', 'user'))
+    role!: string;
 
     /**
      * @description Path to the user's photo

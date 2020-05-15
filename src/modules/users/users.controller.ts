@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Param,
+    Patch,
+    Post,
+    Query,
+    SetMetadata,
+    UseGuards,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
     ApiBadRequestResponse,
@@ -17,11 +30,15 @@ import { UsersService } from './users.service';
 import { catchAsync } from '../../helpers/utils/catch-async';
 import { SendResponse } from '../../helpers/utils/send-response';
 import { PaginateQueryDto } from '../../helpers/common-dtos/paginate-query.dto';
+import { AuthRequiredGuard } from '../../guards/auth-required.guard';
+import { RestrictToGuard } from '../../guards/restrict-to.guard';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-    constructor(public $usersService: UsersService) {}
+    constructor(public $usersService: UsersService) {
+
+    }
 
     /**
      *  @description Returns users
@@ -37,13 +54,15 @@ export class UsersController {
 
     /**
      * @description Creates user and returns it
-     * @permissions admins
+     * @permissions admins and moderators
      * @statusCodes 201, 400 */
     @ApiOperation({ summary: 'CREATE USER' })
     @ApiBearerAuth()
     @ApiCreatedResponse({ description: 'User created.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @SetMetadata('roles', ['admin', 'moderator'])
+    @UseGuards(AuthRequiredGuard, RestrictToGuard)
     @Post('/')
     async create(@Body() createUserDto: CreateUserDto) {
         return SendResponse(await catchAsync(this.$usersService.create(createUserDto)));
@@ -63,13 +82,15 @@ export class UsersController {
 
     /**
      *  @description Updates user with the specified id
-     *  @permissions admins
+     *  @permissions admins and moderators
      *  @statusCodes 201, 400 */
     @ApiOperation({ summary: 'UPDATE USER' })
     @ApiBearerAuth()
     @ApiOkResponse({ description: 'User updated.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @SetMetadata('roles', ['admin', 'moderator'])
+    @UseGuards(AuthRequiredGuard, RestrictToGuard)
     @Patch('/:id')
     async update(@Param() params: ParamIdDto, @Body() updateUserDto: UpdateUserDto) {
         await catchAsync(this.$usersService.update(params.id, updateUserDto));
@@ -77,7 +98,7 @@ export class UsersController {
 
     /**
      *  @description Deletes user with the specified id
-     *  @permissions admins
+     *  @permissions admins and moderators
      *  @statusCodes 204, 404, 400 */
     @ApiOperation({ summary: 'DELETE USER' })
     @ApiBearerAuth()
@@ -86,6 +107,8 @@ export class UsersController {
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @HttpCode(HttpStatus.NO_CONTENT)
+    @SetMetadata('roles', ['admin', 'moderator'])
+    @UseGuards(AuthRequiredGuard, RestrictToGuard)
     @Delete('/:id')
     async delete(@Param() params: ParamIdDto) {
         await catchAsync(this.$usersService.delete(params.id));
