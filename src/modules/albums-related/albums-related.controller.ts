@@ -1,7 +1,7 @@
 import {
     BadRequestException, Body,
     Controller,
-    Delete,
+    Delete, HttpCode, HttpStatus,
     Param,
     Post, SetMetadata,
     UploadedFile,
@@ -11,8 +11,8 @@ import {
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,
-    ApiForbiddenResponse, ApiOkResponse,
-    ApiOperation,
+    ApiForbiddenResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse,
+    ApiOperation, ApiParam,
     ApiTags,
 } from '@nestjs/swagger';
 import { AuthRequiredGuard } from '../../guards/auth-required.guard';
@@ -25,6 +25,7 @@ import { IsOwnerGuard } from '../../guards/is-owner.guard';
 import Album from '../../models/album/album.model';
 import { AlbumsRelatedService } from './albums-related.service';
 import { AddArtistsDto } from './dto/add-artists.dto';
+import { RemoveArtistsDto } from './dto/remove-artists.dto';
 
 @ApiTags('albums')
 @Controller('albums')
@@ -36,9 +37,15 @@ export class AlbumsRelatedController {
 
     /**
      * --> ADD MANY ARTIST TO ALBUM
-     * @description Creates an album and returns it
+     * @description Adds artists to specified album
      * @permissions authenticated users, owners
-     * @statusCodes 201, 400 */
+     * @statusCodes 201, 400, 404 */
+    @ApiOperation({ summary: 'ADD MANY ARTIST TO ALBUM' })
+    @ApiNoContentResponse()
+    @ApiBadRequestResponse()
+    @ApiNotFoundResponse()
+    @ApiForbiddenResponse()
+    @ApiParam({ name: 'id', type: 'UUID' })
     @SetMetadata('model', Album)
     @UseGuards(AuthRequiredGuard, IsOwnerGuard)
     @Post('/:id/add-artists')
@@ -47,13 +54,22 @@ export class AlbumsRelatedController {
     }
 
     /**
-     * --> DELETE ONE ARTIST FROM ALBUM
-     * @description Creates an album and returns it
+     * --> REMOVE MANY ARTIST FROM ALBUM
+     * @description Removes artists from specified album
      * @permissions authenticated users, owners
-     * @statusCodes 201, 400 */
-    @Delete('/:id/remove-artist')
-    deleteArtistFromAlbum() {
-
+     * @statusCodes 204, 400, 404 */
+    @ApiOperation({ summary: 'REMOVE MANY ARTIST FROM ALBUM' })
+    @ApiNoContentResponse()
+    @ApiBadRequestResponse()
+    @ApiNotFoundResponse()
+    @ApiForbiddenResponse()
+    @ApiParam({ name: 'id', type: 'UUID' })
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @SetMetadata('model', Album)
+    @UseGuards(AuthRequiredGuard, IsOwnerGuard)
+    @Delete('/:id/remove-artists')
+    async removeArtistFromAlbum(@Param() params: ParamIdDto, @Body() removeArtistsDto: RemoveArtistsDto) {
+        await catchAsync(this.$albumsRelatedService.removeArtists(params.id, removeArtistsDto));
     }
 
     /**

@@ -9,6 +9,7 @@ import { Sequelize } from 'sequelize-typescript';
 import User from '../../models/user/user.model';
 import { Op } from 'sequelize';
 import UserAlbum from '../../models/m2m/useralbum.model';
+import { RemoveArtistsDto } from './dto/remove-artists.dto';
 
 @Injectable()
 export class AlbumsRelatedService {
@@ -46,6 +47,27 @@ export class AlbumsRelatedService {
             if (artists.length == 0) throw new NotFoundException('not found any user');
 
             await album.$add('artists', artists, { transaction, through: UserAlbum });
+        });
+    }
+
+    removeArtists(id: string, removeArtistsDto: RemoveArtistsDto) {
+        const artistIds = removeArtistsDto.artists
+            // * Get artist ids
+            .map((artist) => artist.id)
+            // * Make array unique
+            .filter((artistId, index, self) => self.indexOf(artistId) === index && this.$currentUser.getUser.id != artistId);
+
+        // ? after filtering
+        if (artistIds.length == 0) throw new NotFoundException('not found any user');
+
+        return this.$sequelize.transaction(async transaction => {
+            // * Find the album
+            const album = await this.$album.findByPk(id, { transaction });
+
+            // ? If it is not exists then throw error
+            if (!album) throw new NotFoundException('not found any album');
+
+            await album.$remove('artists', artistIds, { transaction, through: UserAlbum });
         });
     }
 
