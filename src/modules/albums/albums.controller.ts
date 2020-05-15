@@ -23,7 +23,7 @@ import {
     ApiNoContentResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
-    ApiOperation,
+    ApiOperation, ApiParam,
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -85,6 +85,7 @@ export class AlbumsController {
     @ApiOkResponse({ description: 'Album found.' })
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @ApiParam({ name: 'id', type: 'UUID' })
     @Get('/:id')
     async get(@Param() params: ParamIdDto) {
         return SendResponse(await catchAsync(this.$albumsService.get(params.id)));
@@ -101,6 +102,7 @@ export class AlbumsController {
     @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the album.' })
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @ApiParam({ name: 'id', type: 'UUID' })
     @SetMetadata('model', Album)
     @UseGuards(AuthRequiredGuard, IsOwnerGuard)
     @Patch('/:id')
@@ -119,6 +121,7 @@ export class AlbumsController {
     @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the album.' })
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @ApiParam({ name: 'id', type: 'UUID' })
     @HttpCode(HttpStatus.NO_CONTENT)
     @SetMetadata('model', Album)
     @UseGuards(AuthRequiredGuard, IsOwnerGuard)

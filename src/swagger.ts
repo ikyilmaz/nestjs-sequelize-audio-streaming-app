@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { UsersModule } from './modules/users/users.module';
 import { AlbumsModule } from './modules/albums/albums.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { AlbumsRelatedModule } from './modules/albums-related/albums-related.module';
 
 export const setupSwagger = (app: INestApplication) => {
     const options = new DocumentBuilder()
@@ -12,7 +13,7 @@ export const setupSwagger = (app: INestApplication) => {
         .build();
 
     const document = SwaggerModule.createDocument(app, options, {
-        include: [UsersModule, AlbumsModule, AuthModule],
+        include: [UsersModule, AlbumsModule, AuthModule, AlbumsRelatedModule],
     });
 
     SwaggerModule.setup('api', app, document);

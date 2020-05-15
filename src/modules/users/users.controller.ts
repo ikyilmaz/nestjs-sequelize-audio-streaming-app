@@ -21,7 +21,7 @@ import {
     ApiNoContentResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
-    ApiOperation,
+    ApiOperation, ApiParam,
     ApiTags,
 } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -78,6 +78,7 @@ export class UsersController {
     @ApiOkResponse({ description: 'User found.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @ApiParam({ name: 'id', type: 'UUID' })
     @Get('/:id')
     async get(@Param() params: ParamIdDto) {
         return SendResponse(await catchAsync(this.$usersService.get(params.id)));
@@ -93,6 +94,7 @@ export class UsersController {
     @ApiOkResponse({ description: 'User updated.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @ApiParam({ name: 'id', type: 'UUID' })
     @SetMetadata('roles', ['admin', 'moderator'])
     @UseGuards(AuthRequiredGuard, RestrictToGuard)
     @Patch('/:id')
@@ -111,6 +113,7 @@ export class UsersController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
+    @ApiParam({ name: 'id', type: 'UUID' })
     @HttpCode(HttpStatus.NO_CONTENT)
     @SetMetadata('roles', ['admin', 'moderator'])
     @UseGuards(AuthRequiredGuard, RestrictToGuard)
