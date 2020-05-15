@@ -4,16 +4,15 @@ import { CurrentUserService } from '@app/current-user';
 import { InjectModel } from '@nestjs/sequelize';
 import User from '../models/user/user.model';
 import { catchAsync } from '../helpers/utils/catch-async';
-import { promisify } from "util";
+import { promisify } from 'util';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthRequiredGuard implements CanActivate {
-    constructor(
-        private $currentUserService: CurrentUserService,
-        @InjectModel(User) private $user: typeof User,
-    ) {}
+    constructor(private $currentUserService: CurrentUserService, @InjectModel(User) private $user: typeof User) {}
     async canActivate(context: ExecutionContext) {
+        console.log('AuthRequired START');
+
         const req = context.switchToHttp().getRequest<Request>();
         this.$user.findByPk();
 
@@ -27,8 +26,10 @@ export class AuthRequiredGuard implements CanActivate {
 
         if (!token) return false;
 
-        //@ts-ignore TODO
-        const decoded = await catchAsync(await promisify(jwt.verify)(token, process.env.JWT_SECRET) as Promise<{ id: string; iat: string }>);
+        const decoded = await catchAsync(
+            //@ts-ignore TODO
+            promisify(jwt.verify)(token, process.env.JWT_SECRET) as Promise<{ id: string; iat: string }>,
+        );
 
         if (!decoded.id) return false;
 
@@ -45,6 +46,8 @@ export class AuthRequiredGuard implements CanActivate {
         }
 
         this.$currentUserService.setUser = user;
+
+        console.log('AuthRequired END');
 
         return true;
     }

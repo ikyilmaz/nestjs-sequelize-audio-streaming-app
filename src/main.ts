@@ -8,7 +8,7 @@ import * as chalk from 'chalk';
 import { AuthModule } from './modules/auth/auth.module';
 
 (async function() {
-    const app = await NestFactory.create(AppModule, { });
+    const app = await NestFactory.create(AppModule, {});
 
     app.useGlobalPipes(new ValidationPipe());
 
@@ -26,7 +26,7 @@ import { AuthModule } from './modules/auth/auth.module';
 
     SwaggerModule.setup('api', app, document);
 
-    await app.listen(8080);
+    await app.listen(process.env.PORT);
 })()
     .catch(err => console.log(err))
     .then(() => console.log(chalk.magentaBright('--> READY TO GO ON %s'), `http://${process.env.HOST}:${process.env.PORT}`));

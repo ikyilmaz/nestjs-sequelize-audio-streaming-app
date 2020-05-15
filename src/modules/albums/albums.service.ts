@@ -9,16 +9,10 @@ import * as sharp from 'sharp';
 import User from '../../models/user/user.model';
 import Track from '../../models/track/track.model';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { filterObject } from '../../helpers/utils/filter-object';
 
 @Injectable()
 export class AlbumsService {
-
-    constructor(
-        @InjectModel(Album) private $album: typeof Album,
-        private $currentUser: CurrentUserService,
-    ) {
-    }
+    constructor(@InjectModel(Album) private $album: typeof Album, private $currentUser: CurrentUserService) {}
 
     getMany(query: Pick<any, any>) {
         return this.$album.findAll({ ...paginate(query), attributes: ['id', 'title', 'photo', 'ownerId'] });
@@ -36,34 +30,28 @@ export class AlbumsService {
 
     get(id: string) {
         return this.$album.findByPk(id, {
-            include: [{
-                model: User,
-                attributes: ['id', 'firstName', 'lastName', 'username'],
-                as: 'owner',
-            }, {
-                model: User,
-                attributes: ['id', 'firstName', 'lastName', 'username'],
-                as: 'artists',
-                through: { attributes: [] },
-            }, {
-                model: Track,
-                attributes: ['id', 'title', 'track', 'ownerId'],
-                include: [{
+            include: [
+                {
                     model: User,
-                    attributes: ['id', 'firstName', 'lastName', 'username'],
                     as: 'owner',
-                }, {
-                    model: User,
                     attributes: ['id', 'firstName', 'lastName', 'username'],
+                },
+                {
+                    model: User,
                     as: 'artists',
+                    attributes: ['id', 'firstName', 'lastName', 'username'],
                     through: { attributes: [] },
-                }],
-            }],
+                },
+                {
+                    model: Track,
+                    attributes: ['id', 'title', 'track', 'ownerId'],
+                },
+            ],
         });
     }
 
     async update(id: string, updateAlbumDto: UpdateAlbumDto, file: Pick<any, any>) {
-        if (file) await this.saveAlbumPhoto(updateAlbumDto, file)
+        if (file) await this.saveAlbumPhoto(updateAlbumDto, file);
         return this.$album.update(updateAlbumDto, { where: { id } });
     }
 

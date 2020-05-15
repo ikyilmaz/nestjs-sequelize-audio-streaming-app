@@ -8,8 +8,11 @@ import {
     Param,
     Patch,
     Post,
-    Query, SetMetadata, UploadedFile,
-    UseGuards, UseInterceptors,
+    Query,
+    SetMetadata,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors,
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
@@ -20,7 +23,8 @@ import {
     ApiNotFoundResponse,
     ApiOkResponse,
     ApiOperation,
-    ApiTags, ApiUnauthorizedResponse,
+    ApiTags,
+    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { PaginateQueryDto } from '../../helpers/common-dtos/paginate-query.dto';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
@@ -35,8 +39,14 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import { catchAsync } from '../../helpers/utils/catch-async';
 import { IsOwnerGuard } from '../../guards/is-owner.guard';
 import Album from '../../models/album/album.model';
-import { InjectConnection } from '@nestjs/sequelize';
-import { Sequelize } from 'sequelize-typescript';
+
+const uploadAlbumPhotoOptions = {
+    storage: multer.memoryStorage(),
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image')) return cb(null, true);
+        cb(new Error('Not an image! Please upload only images.'), false);
+    },
+};
 
 @ApiTags('albums')
 @Controller('albums')
@@ -46,6 +56,7 @@ export class AlbumsController {
     }
 
     /**
+     *  --> GET MANY ALBUM
      *  @description Returns albums
      *  @statusCodes 200, 404, 400 */
     @ApiOperation({ summary: 'GET MANY ALBUM' })
@@ -58,6 +69,7 @@ export class AlbumsController {
     }
 
     /**
+     * --> CREATE ALBUM
      * @description Creates an album and returns it
      * @permissions authenticated users
      * @statusCodes 201, 400 */
@@ -67,22 +79,21 @@ export class AlbumsController {
     @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @UseGuards(AuthRequiredGuard)
-    @UseInterceptors(FileInterceptor('photo', {
-        storage: multer.memoryStorage(),
-        fileFilter: (req, file, cb) => {
-            if (file.mimetype.startsWith('image')) return cb(null, true);
-            cb(new Error('Not an image! Please upload only images.'), false);
-        },
-    }))
+    @UseInterceptors(FileInterceptor('photo', uploadAlbumPhotoOptions))
     @Post('/')
     async create(@Body() createAlbumDto: CreateAlbumDto, @UploadedFile() file) {
-        return SendResponse(await catchAsync(this.$albumsService.create(
-            filterObject(createAlbumDto, ['ownerId', 'photo']), // Removes the unwanted fields
-            file,
-        )));
+        return SendResponse(
+            await catchAsync(
+                this.$albumsService.create(
+                    filterObject(createAlbumDto, ['ownerId', 'photo']), // * Removes the unwanted fields
+                    file,
+                ),
+            ),
+        );
     }
 
     /**
+     *  --> GET ONE ALBUM BY ID
      *  @description Returns an album with the specified id
      *  @statusCodes 200, 404, 400 */
     @ApiOperation({ summary: 'GET ALBUM' })
@@ -95,6 +106,7 @@ export class AlbumsController {
     }
 
     /**
+     *  --> UPDATE ALBUM
      *  @description Updates an album with the specified id
      *  @permissions authenticated users, owners
      *  @statusCodes 201, 400 */
@@ -105,25 +117,22 @@ export class AlbumsController {
     @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the album.' })
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @UseInterceptors(FileInterceptor('photo', {
-        storage: multer.memoryStorage(),
-        fileFilter: (req, file, cb) => {
-            if (file.mimetype.startsWith('image')) return cb(null, true);
-            cb(new Error('Not an image! Please upload only images.'), false);
-        },
-    }))
-    @SetMetadata("model", Album)
+    @UseInterceptors(FileInterceptor('photo', uploadAlbumPhotoOptions))
+    @SetMetadata('model', Album)
     @UseGuards(AuthRequiredGuard, IsOwnerGuard)
     @Patch('/:id')
     async update(@Param() params: ParamIdDto, @Body() updateAlbumDto: UpdateAlbumDto, @UploadedFile() file) {
-        await catchAsync(this.$albumsService.update(
-            params.id,
-            filterObject(updateAlbumDto, ['ownerId', 'photo']), // Removes the unwanted fields
-            file,
-        ));
+        await catchAsync(
+            this.$albumsService.update(
+                params.id,
+                filterObject(updateAlbumDto, ['ownerId', 'photo']), // Removes the unwanted fields
+                file,
+            ),
+        );
     }
 
     /**
+     *  --> DELETE ALBUM
      *  @description Deletes an album with the specified id
      *  @permissions authenticated users, owners
      *  @statusCodes 204, 404, 400 */
@@ -135,7 +144,7 @@ export class AlbumsController {
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @HttpCode(HttpStatus.NO_CONTENT)
-    @SetMetadata("model", Album)
+    @SetMetadata('model', Album)
     @UseGuards(AuthRequiredGuard, IsOwnerGuard)
     @Delete('/:id')
     async delete(@Param() params: ParamIdDto) {
