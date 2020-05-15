@@ -19,6 +19,8 @@ import Album from './models/album/album.model';
 import Friendship from './models/user/friendship/friendship.model';
 import { CurrentUserModule } from '@app/current-user';
 import { TokenModule } from '@app/token';
+import { AlbumsRelatedController } from './modules/albums-related/albums-related.controller';
+import { AlbumsRelatedModule } from './modules/albums-related/albums-related.module';
 
 @Module({
     imports: [
@@ -46,7 +48,8 @@ import { TokenModule } from '@app/token';
         AlbumsModule,
         AuthModule,
         CurrentUserModule,
-        TokenModule
+        TokenModule,
+        AlbumsRelatedModule
     ]
 })
 export class AppModule {}

@@ -1,5 +1,5 @@
 import {
-    BadRequestException,
+    BadRequestException, Body,
     Controller,
     Delete,
     Param,
@@ -11,7 +11,6 @@ import {
 import {
     ApiBadRequestResponse,
     ApiBearerAuth,
-    ApiCreatedResponse,
     ApiForbiddenResponse, ApiOkResponse,
     ApiOperation,
     ApiTags,
@@ -22,15 +21,16 @@ import * as multer from 'multer';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { SendResponse } from '../../helpers/utils/send-response';
 import { catchAsync } from '../../helpers/utils/catch-async';
-import { AlbumsService } from './albums.service';
 import { IsOwnerGuard } from '../../guards/is-owner.guard';
 import Album from '../../models/album/album.model';
+import { AlbumsRelatedService } from './albums-related.service';
+import { AddArtistsDto } from './dto/add-artists.dto';
 
 @ApiTags('albums')
 @Controller('albums')
 export class AlbumsRelatedController {
 
-    constructor(public $albumsService: AlbumsService) {
+    constructor(public $albumsRelatedService: AlbumsRelatedService) {
 
     }
 
@@ -39,9 +39,10 @@ export class AlbumsRelatedController {
      * @description Creates an album and returns it
      * @permissions authenticated users, owners
      * @statusCodes 201, 400 */
+    @UseGuards(AuthRequiredGuard)
     @Post('/:id/add-artists')
-    addManyArtistToAlbum() {
-
+    addManyArtistToAlbum(@Param() params: ParamIdDto, @Body() addArtistsDto: AddArtistsDto) {
+        this.$albumsRelatedService.addArtists(params.id, addArtistsDto)
     }
 
     /**
@@ -64,7 +65,7 @@ export class AlbumsRelatedController {
     @ApiOkResponse({ description: 'Album\'s photo updated.' })
     @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @SetMetadata("model", Album)
+    @SetMetadata('model', Album)
     @UseGuards(AuthRequiredGuard, IsOwnerGuard)
     @UseInterceptors(FileInterceptor('photo', {
         storage: multer.memoryStorage(),
@@ -76,7 +77,7 @@ export class AlbumsRelatedController {
     @Post('/:id/update-photo')
     async updateAlbumPhoto(@Param() params: ParamIdDto, @UploadedFile() file) {
         if (!file) throw new BadRequestException('please specify the file');
-        return SendResponse(await catchAsync(this.$albumsService.updateAlbumPhoto(params.id, file)));
+        return SendResponse(await catchAsync(this.$albumsRelatedService.updateAlbumPhoto(params.id, file)));
     }
 
 
