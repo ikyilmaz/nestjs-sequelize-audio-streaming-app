@@ -39,10 +39,11 @@ export class AlbumsRelatedController {
      * @description Creates an album and returns it
      * @permissions authenticated users, owners
      * @statusCodes 201, 400 */
-    @UseGuards(AuthRequiredGuard)
+    @SetMetadata('model', Album)
+    @UseGuards(AuthRequiredGuard, IsOwnerGuard)
     @Post('/:id/add-artists')
-    addManyArtistToAlbum(@Param() params: ParamIdDto, @Body() addArtistsDto: AddArtistsDto) {
-        this.$albumsRelatedService.addArtists(params.id, addArtistsDto)
+    async addManyArtistToAlbum(@Param() params: ParamIdDto, @Body() addArtistsDto: AddArtistsDto) {
+        await catchAsync(this.$albumsRelatedService.addArtists(params.id, addArtistsDto));
     }
 
     /**

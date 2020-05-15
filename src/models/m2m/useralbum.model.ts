@@ -33,24 +33,6 @@ export default class UserAlbum extends BaseModel<UserAlbum> {
     /*** @description Album which one is associated */
     @BelongsTo(() => Album)
     album!: Album;
-
-
-    // HOOKS
-
-    /*** @description Checks user and album already exists or not*/
-    @BeforeSave({ name: 'check-if-artist-and-album-exists' })
-    static async checkIfArtistAndAlbumExists(attributes: UserAlbum) {
-
-        const userAlbum = await UserAlbum.findOne({
-            where: {
-                albumId: attributes.albumId,
-                artistId: attributes.artistId,
-            },
-        });
-
-        if (userAlbum) throw new BadRequestException('already exists');
-
-    }
 }
 
 

@@ -1,28 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as moment from 'moment';
 import * as sharp from 'sharp';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import Album from '../../models/album/album.model';
 import { CurrentUserService } from '@app/current-user';
 import { AddArtistsDto } from './dto/add-artists.dto';
+import { Sequelize } from 'sequelize-typescript';
+import User from '../../models/user/user.model';
+import { Op } from 'sequelize';
+import UserAlbum from '../../models/m2m/useralbum.model';
 
 @Injectable()
 export class AlbumsRelatedService {
 
     constructor(
         @InjectModel(Album) private $album: typeof Album,
+        @InjectModel(User) private $user: typeof User,
+        @InjectConnection() private $sequelize: Sequelize,
         private $currentUser: CurrentUserService,
     ) {
 
     }
 
     addArtists(id: string, addArtistsDto: AddArtistsDto) {
-        const artistsAlbums = addArtistsDto.artists
-            .map((artist) => artist.id) // * Get artist ids
-            .filter((artistId, index, self) => self.indexOf(artistId) === index && this.$currentUser.getUser.id != artistId) // * Make array unique
-            .map(artistId => ({ albumId: id, artistId: artistId })); // * Prepare for bulkCreate
+        const artistIds = addArtistsDto.artists
+            // * Get artist ids
+            .map((artist) => artist.id)
+            // * Make array unique
+            .filter((artistId, index, self) => self.indexOf(artistId) === index && this.$currentUser.getUser.id != artistId);
 
-        console.log(artistsAlbums);
+        // ? after filtering
+        if (artistIds.length == 0) throw new NotFoundException('not found any user');
+
+        return this.$sequelize.transaction(async transaction => {
+            // * Find the album
+            const album = await this.$album.findByPk(id, { transaction });
+
+            // ? If it is not exists then throw error
+            if (!album) throw new NotFoundException('not found any album');
+
+            // * Find artists
+            const artists = await this.$user.findAll({ where: { id: { [Op.in]: artistIds } }, transaction });
+
+            // ? If no artist found then throw error
+            if (artists.length == 0) throw new NotFoundException('not found any user');
+
+            await album.$add('artists', artists, { transaction, through: UserAlbum });
+        });
     }
 
     async updateAlbumPhoto(id: string, file: Pick<any, any>) {
