@@ -1,9 +1,21 @@
 import { BaseModel } from '../base';
 import { STRING, UUID, JSON } from 'sequelize';
-import { AllowNull, BelongsTo, BelongsToMany, Column, DataType, Default, ForeignKey, Length, Table } from 'sequelize-typescript';
+import {
+    AllowNull,
+    BelongsTo,
+    BelongsToMany,
+    Column,
+    DataType,
+    Default,
+    ForeignKey,
+    HasMany,
+    Length,
+    Table,
+} from 'sequelize-typescript';
 import User from '../user/user.model';
 import UserAlbum from '../m2m/useralbum.model';
 import { albumScopes, defaultAlbumScope } from './album.scopes';
+import Track from '../track/track.model';
 
 @Table({
     timestamps: true,
@@ -15,7 +27,7 @@ export default class Album extends BaseModel<Album> {
     /*** @description Album's Title */
     @Length({
         max: 128,
-        msg: "field 'firstName' must be between 1 and 128 characters",
+        msg: 'field \'firstName\' must be between 1 and 128 characters',
     })
     @AllowNull(false)
     @Column(STRING(128))
@@ -28,6 +40,10 @@ export default class Album extends BaseModel<Album> {
     @Column(DataType.STRING)
     photo!: string;
 
+    // ASSOCIATIONS
+
+    // OWNER
+
     /*** @description User's id which one is owner of this track */
     @ForeignKey(() => User)
     @AllowNull(false)
@@ -38,9 +54,16 @@ export default class Album extends BaseModel<Album> {
     @BelongsTo(() => User)
     owner!: User;
 
+    // ARTISTS
+
     /*** @description Artists on the track */
     @BelongsToMany(() => User, {
         through: { model: () => UserAlbum, unique: false },
     })
     artists!: User[];
+
+    // TRACKS
+    /*** @description Tracks in the album */
+    @HasMany(() => Track)
+    tracks!: Track[];
 }

@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { InjectModel } from '@nestjs/sequelize';
 import Album from '../../models/album/album.model';
 import { paginate } from '../../helpers/utils/paginate';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { CurrentUserService } from '@app/current-user';
-import UserAlbum from '../../models/m2m/useralbum.model';
-import { Sequelize } from 'sequelize-typescript';
-import * as moment from "moment";
-import * as sharp from "sharp"
+import * as moment from 'moment';
+import * as sharp from 'sharp';
+import User from '../../models/user/user.model';
+import Track from '../../models/track/track.model';
+import { UpdateAlbumDto } from './dto/update-album.dto';
+import { filterObject } from '../../helpers/utils/filter-object';
 
 @Injectable()
 export class AlbumsService {
 
     constructor(
         @InjectModel(Album) private $album: typeof Album,
-        @InjectModel(UserAlbum) private $userAlbum: typeof UserAlbum,
-        @InjectConnection() private $sequelize: Sequelize,
         private $currentUser: CurrentUserService,
     ) {
     }
@@ -25,22 +25,61 @@ export class AlbumsService {
     }
 
     async create(createAlbumDto: CreateAlbumDto, file: Pick<any, any>) {
-        if (file) {
-            file.filename = `album-${this.$currentUser.getUser.id}-${moment().unix()}.jpeg`;
-
-            createAlbumDto.photo = file.filename;
-
-            await sharp(file.buffer as Buffer)
-                .resize(500, 500)
-                .toFormat('jpeg')
-                .jpeg({ quality: 90 })
-                .toFile(`${__dirname}/../public/assets/img/album-images/${file.filename}`);
-        }
+        if (file) await this.saveAlbumPhoto(createAlbumDto, file);
 
         return this.$album.create({
             title: createAlbumDto.title,
             photo: createAlbumDto.photo,
             ownerId: this.$currentUser.getUser.id,
         });
+    }
+
+    get(id: string) {
+        return this.$album.findByPk(id, {
+            include: [{
+                model: User,
+                attributes: ['id', 'firstName', 'lastName', 'username'],
+                as: 'owner',
+            }, {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName', 'username'],
+                as: 'artists',
+                through: { attributes: [] },
+            }, {
+                model: Track,
+                attributes: ['id', 'title', 'track', 'ownerId'],
+                include: [{
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName', 'username'],
+                    as: 'owner',
+                }, {
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName', 'username'],
+                    as: 'artists',
+                    through: { attributes: [] },
+                }],
+            }],
+        });
+    }
+
+    async update(id: string, updateAlbumDto: UpdateAlbumDto, file: Pick<any, any>) {
+        if (file) await this.saveAlbumPhoto(updateAlbumDto, file)
+        return this.$album.update(updateAlbumDto, { where: { id } });
+    }
+
+    delete(id: string) {
+        return this.$album.destroy({ where: { id } });
+    }
+
+    private async saveAlbumPhoto(albumDto: CreateAlbumDto | UpdateAlbumDto, file: Pick<any, any>) {
+        file.filename = `album-${this.$currentUser.getUser.id}-${moment().unix()}.jpeg`;
+
+        albumDto.photo = file.filename;
+
+        await sharp(file.buffer as Buffer)
+            .resize(500, 500)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`${__dirname}/../public/assets/img/album-images/${file.filename}`);
     }
 }
