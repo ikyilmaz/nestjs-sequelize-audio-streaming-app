@@ -4,8 +4,6 @@ import Album from '../../models/album/album.model';
 import { paginate } from '../../helpers/utils/paginate';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { CurrentUserService } from '@app/current-user';
-import * as moment from 'moment';
-import * as sharp from 'sharp';
 import User from '../../models/user/user.model';
 import Track from '../../models/track/track.model';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -55,20 +53,5 @@ export class AlbumsService {
 
     delete(id: string) {
         return this.$album.destroy({ where: { id } });
-    }
-
-    async updateAlbumPhoto(id: string, file: Pick<any, any>) {
-        await this.saveAlbumPhoto(file);
-        this.$album.update({ photo: file.filename }, { where: { id } });
-    }
-
-    private async saveAlbumPhoto(file: Pick<any, any>) {
-        file.filename = `album-${this.$currentUser.getUser.id}-${moment().unix()}.jpeg`;
-
-        await sharp(file.buffer as Buffer)
-            .resize(500, 500)
-            .toFormat('jpeg')
-            .jpeg({ quality: 90 })
-            .toFile(`${__dirname}/../public/assets/img/album-images/${file.filename}`);
     }
 }
