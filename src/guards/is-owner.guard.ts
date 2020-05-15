@@ -23,6 +23,8 @@ export class IsOwnerGuard implements CanActivate {
         const isOwner = this.$currentUserService.getUser.id == doc.userId;
         const isAdmin = this.$currentUserService.getUser.role == 'admin';
 
+        console.log((isOwner || isAdmin))
+
         return (isOwner || isAdmin);
     }
 }

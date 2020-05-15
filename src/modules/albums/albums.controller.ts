@@ -8,7 +8,7 @@ import {
     Param,
     Patch,
     Post,
-    Query, UploadedFile,
+    Query, SetMetadata, UploadedFile,
     UseGuards, UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -33,6 +33,10 @@ import * as multer from 'multer';
 import { filterObject } from '../../helpers/utils/filter-object';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { catchAsync } from '../../helpers/utils/catch-async';
+import { IsOwnerGuard } from '../../guards/is-owner.guard';
+import Album from '../../models/album/album.model';
+import { InjectConnection } from '@nestjs/sequelize';
+import { Sequelize } from 'sequelize-typescript';
 
 @ApiTags('albums')
 @Controller('albums')
@@ -108,6 +112,8 @@ export class AlbumsController {
             cb(new Error('Not an image! Please upload only images.'), false);
         },
     }))
+    @SetMetadata("model", Album)
+    @UseGuards(AuthRequiredGuard, IsOwnerGuard)
     @Patch('/:id')
     async update(@Param() params: ParamIdDto, @Body() updateAlbumDto: UpdateAlbumDto, @UploadedFile() file) {
         await catchAsync(this.$albumsService.update(
@@ -129,6 +135,8 @@ export class AlbumsController {
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @HttpCode(HttpStatus.NO_CONTENT)
+    @SetMetadata("model", Album)
+    @UseGuards(AuthRequiredGuard, IsOwnerGuard)
     @Delete('/:id')
     async delete(@Param() params: ParamIdDto) {
         await catchAsync(this.$albumsService.delete(params.id));
