@@ -71,10 +71,6 @@ export class AlbumsRelatedService {
         });
     }
 
-    addTracks(id: string) {
-
-    }
-
     async updateAlbumPhoto(id: string, file: Pick<any, any>) {
         file.filename = `album-${this.$currentUser.getUser.id}-${moment().unix()}.jpeg`;
 

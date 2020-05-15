@@ -5,7 +5,7 @@ import * as chalk from 'chalk';
 import { setupSwagger } from './swagger';
 
 (async function() {
-    const app = await NestFactory.create(AppModule, {});
+    const app = await NestFactory.create(AppModule);
 
     app.useGlobalPipes(new ValidationPipe());
 

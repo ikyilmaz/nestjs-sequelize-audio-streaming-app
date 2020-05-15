@@ -29,7 +29,7 @@ export class TracksService {
         const duration = await promisify(mp3Duration)(file.buffer);
         file.filename = `track-${this.$currentUser.getUser.id}-${moment().unix()}`;
 
-        fs.writeFile(`${__dirname}/../public/assets/img/album-images/${file.filename}.mp3`, file.buffer, (err) => err);
+        fs.writeFile(`${__dirname}/../public/assets/audio/tracks/${file.filename}.mp3`, file.buffer, (err) => err);
 
         return this.$track.create({
             title: createTrackDto.title,

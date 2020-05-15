@@ -82,25 +82,6 @@ export class AlbumsRelatedController {
     }
 
     /**
-     * --> ADD MANY TRACK TO ALBUM
-     * @description Adds tracks to specified album
-     * @permissions authenticated users, owners
-     * @statusCodes 201, 400, 404 */
-    @ApiOperation({ summary: 'ADD MANY TRACK TO ALBUM' })
-    @ApiBearerAuth()
-    @ApiNoContentResponse()
-    @ApiBadRequestResponse()
-    @ApiNotFoundResponse()
-    @ApiForbiddenResponse()
-    @ApiParam({ name: 'id', type: 'UUID' })
-    @SetMetadata('model', Album)
-    @UseGuards(AuthRequiredGuard, IsOwnerGuard)
-    @Post('/:id/add-tracks')
-    async addManyTractToAlbum(@Param() params: ParamIdDto, @Body() addArtistsDto: AddArtistsDto) {
-        await catchAsync(this.$albumsRelatedService.addArtists(params.id, addArtistsDto));
-    }
-
-    /**
      * --> UPDATE ALBUM PHOTO
      * @description Updates album's photo
      * @permissions authenticated users
