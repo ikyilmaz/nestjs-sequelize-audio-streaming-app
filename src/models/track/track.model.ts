@@ -10,7 +10,7 @@ export default class Track extends BaseModel<Track> {
     @Length({
         min: 1,
         max: 128,
-        msg: "field 'title' must be between 1 and 128 characters",
+        msg: 'field \'title\' must be between 1 and 128 characters',
     })
     @AllowNull(false)
     @Column(DataType.STRING(128))
@@ -20,6 +20,11 @@ export default class Track extends BaseModel<Track> {
     @AllowNull(false)
     @Column(DataType.STRING)
     track!: string;
+
+    /*** @description Duration of the track */
+    @AllowNull(false)
+    @Column(DataType.SMALLINT)
+    duration!: number;
 
     /*** @description Album's id which one is includes that track */
     @ForeignKey(() => Album)

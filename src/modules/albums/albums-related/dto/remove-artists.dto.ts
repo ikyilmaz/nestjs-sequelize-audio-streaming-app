@@ -9,8 +9,8 @@ class ArtistDto {
     id: string;
 }
 
-export class AddArtistsDto {
-    @ApiProperty()
+export class RemoveArtistsDto {
+    @ApiProperty({type: [ArtistDto]})
     @ValidateNested({ each: true })
     @IsNotEmpty()
     @IsArray()

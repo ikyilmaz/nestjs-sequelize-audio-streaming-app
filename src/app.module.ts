@@ -19,8 +19,9 @@ import Album from './models/album/album.model';
 import Friendship from './models/user/friendship/friendship.model';
 import { CurrentUserModule } from '@app/current-user';
 import { TokenModule } from '@app/token';
-import { AlbumsRelatedController } from './modules/albums-related/albums-related.controller';
-import { AlbumsRelatedModule } from './modules/albums-related/albums-related.module';
+import { AlbumsRelatedController } from './modules/albums/albums-related/albums-related.controller';
+import { AlbumsRelatedModule } from './modules/albums/albums-related/albums-related.module';
+import { TracksModule } from './modules/tracks/tracks.module';
 
 @Module({
     imports: [
@@ -49,7 +50,7 @@ import { AlbumsRelatedModule } from './modules/albums-related/albums-related.mod
         AuthModule,
         CurrentUserModule,
         TokenModule,
-        AlbumsRelatedModule
+        TracksModule
     ]
 })
 export class AppModule {}

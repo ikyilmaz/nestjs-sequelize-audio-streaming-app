@@ -2,13 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import * as moment from 'moment';
 import * as sharp from 'sharp';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
-import Album from '../../models/album/album.model';
+import Album from '../../../models/album/album.model';
 import { CurrentUserService } from '@app/current-user';
 import { AddArtistsDto } from './dto/add-artists.dto';
 import { Sequelize } from 'sequelize-typescript';
-import User from '../../models/user/user.model';
+import User from '../../../models/user/user.model';
 import { Op } from 'sequelize';
-import UserAlbum from '../../models/m2m/useralbum.model';
+import UserAlbum from '../../../models/m2m/useralbum.model';
 import { RemoveArtistsDto } from './dto/remove-artists.dto';
 
 @Injectable()
@@ -69,6 +69,10 @@ export class AlbumsRelatedService {
 
             await album.$remove('artists', artistIds, { transaction, through: UserAlbum });
         });
+    }
+
+    addTracks(id: string) {
+
     }
 
     async updateAlbumPhoto(id: string, file: Pick<any, any>) {

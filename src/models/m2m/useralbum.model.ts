@@ -2,7 +2,6 @@ import { BaseModel } from '../base';
 import { UUID } from 'sequelize';
 import {
     AllowNull,
-    BeforeSave,
     BelongsTo,
     Column,
     ForeignKey,
@@ -10,7 +9,6 @@ import {
 } from 'sequelize-typescript';
 import User from '../user/user.model';
 import Album from '../album/album.model';
-import { BadRequestException } from '@nestjs/common';
 
 @Table({ timestamps: true, paranoid: true, tableName: 'users_albums' })
 export default class UserAlbum extends BaseModel<UserAlbum> {
