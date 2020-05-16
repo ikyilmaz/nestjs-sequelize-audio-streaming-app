@@ -1,7 +1,7 @@
 import { IsNumberString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class PaginateQueryDto {
+export class CommonQueryDto {
     @ApiProperty({ required: false })
     @IsOptional()
     @IsNumberString()
@@ -11,4 +11,8 @@ export class PaginateQueryDto {
     @IsOptional()
     @IsNumberString()
     limit!: number;
+
+    @ApiProperty({ required: false })
+    @IsOptional({})
+    fields!: string;
 }
