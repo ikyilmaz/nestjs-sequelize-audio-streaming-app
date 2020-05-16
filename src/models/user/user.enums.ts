@@ -11,3 +11,9 @@ export enum UserFields {
     createdAt = 'createdAt',
     updatedAt = 'updatedAt'
 }
+
+export enum UserRoles  {
+    admin = 'admin',
+    moderator = 'moderator',
+    user = 'user'
+}
