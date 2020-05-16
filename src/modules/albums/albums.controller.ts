@@ -27,7 +27,7 @@ import {
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { CommonQueryDto } from '../../helpers/common-dtos/common-query.dto';
+import { GetManyQueryDto, GetOneQueryDto } from '../../helpers/common-dtos/common-query.dto';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { AlbumsService } from './albums.service';
 import { SendResponse } from '../../helpers/utils/send-response';
@@ -40,6 +40,7 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import { catchAsync } from '../../helpers/utils/catch-async';
 import { IsOwnerGuard } from '../../guards/is-owner.guard';
 import Album from '../../models/album/album.model';
+import { GetManyAlbumQueryDto } from './dto/album-query.dto';
 
 @ApiTags('albums')
 @Controller('albums')
@@ -57,7 +58,7 @@ export class AlbumsController {
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Get('/')
-    async getMany(@Query() query: CommonQueryDto) {
+    async getMany(@Query() query: GetManyAlbumQueryDto) {
         return SendResponse(await catchAsync(this.$albumsService.getMany(query)));
     }
 
@@ -87,8 +88,8 @@ export class AlbumsController {
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @ApiParam({ name: 'id', type: 'UUID' })
     @Get('/:id')
-    async get(@Param() params: ParamIdDto) {
-        return SendResponse(await catchAsync(this.$albumsService.get(params.id)));
+    async get(@Param() params: ParamIdDto, @Query() query: GetOneQueryDto) {
+        return SendResponse(await catchAsync(this.$albumsService.get(query, params.id)));
     }
 
     /**

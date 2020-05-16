@@ -1,7 +1,7 @@
-import { CommonQueryDto } from '../../../helpers/common-dtos/common-query.dto';
+import { GetManyQueryDto } from '../../../helpers/common-dtos/common-query.dto';
 import { IsOptional, IsUUID } from 'class-validator';
 
-export class GetManyTrackQueryDto extends CommonQueryDto {
+export class GetManyTrackQueryDto extends GetManyQueryDto {
     @IsOptional()
     title: string;
 
