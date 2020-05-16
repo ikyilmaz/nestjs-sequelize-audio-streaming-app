@@ -13,9 +13,10 @@ import { GetManyTrackQueryDto, GetOneTrackQueryDto } from './dto/track-query.dto
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { queryObject } from '../../helpers/utils/query-object';
 import { TrackFields } from '../../models/track/track.enums';
-import moment = require('moment');
 import { limitPublicUserFields } from '../../helpers/field-limiters/user.field-limiters';
 import { limitAlbumFields } from '../../helpers/field-limiters/album.field-limiters';
+import { limitTrackFields } from '../../helpers/field-limiters/track.field-limiter';
+import moment = require('moment');
 
 @Injectable()
 export class TracksService {
@@ -54,6 +55,7 @@ export class TracksService {
 
     get(id: string, query: GetOneTrackQueryDto) {
         return this.$track.findByPk(id, {
+            attributes: limitTrackFields(query.fields),
             include: [
                 {
                     model: User,

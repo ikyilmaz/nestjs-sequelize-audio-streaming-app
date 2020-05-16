@@ -66,6 +66,7 @@ export class TracksController {
      *  @permissions Authenticated users
      *  @statusCodes 200, 404, 400 */
     @ApiOperation({ summary: 'CREATE TRACK' })
+    @ApiBearerAuth()
     @ApiOkResponse({ description: 'Track created.' })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })

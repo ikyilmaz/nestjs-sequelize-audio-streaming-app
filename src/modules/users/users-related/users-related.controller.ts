@@ -3,7 +3,7 @@ import { UsersRelatedService } from './users-related.service';
 import { SendResponse } from '../../../helpers/utils/send-response';
 import { catchAsync } from '../../../helpers/utils/catch-async';
 import { ParamIdDto } from '../../../helpers/common-dtos/param-id.dto';
-import { GetUserWithAlbumsQueryDto } from '../dto/user-query.dto';
+import { GetUserWithAlbumsQueryDto, GetUserWithTracksQueryDto } from '../dto/user-query.dto';
 import {
     ApiBadRequestResponse,
     ApiNotFoundResponse,
@@ -58,7 +58,7 @@ export class UsersRelatedController {
     @ApiNotFoundResponse({description: "Not found any user."})
     @ApiParam({ name: 'id', type: 'UUID' })
     @Get('/:id/tracks-owned')
-    async getUserWithTracksOwned(@Param() params: ParamIdDto, @Query() query: GetUserWithAlbumsQueryDto) {
+    async getUserWithTracksOwned(@Param() params: ParamIdDto, @Query() query: GetUserWithTracksQueryDto) {
         return SendResponse(await catchAsync(this.$usersRelatedService.getUserWithTracks(params.id, query, 'tracksOwned')));
     }
 
@@ -72,7 +72,7 @@ export class UsersRelatedController {
     @ApiNotFoundResponse({description: "Not found any user."})
     @ApiParam({ name: 'id', type: 'UUID' })
     @Get('/:id/tracks-participated')
-    async getUserWithTracksParticipated(@Param() params: ParamIdDto, @Query() query: GetUserWithAlbumsQueryDto) {
+    async getUserWithTracksParticipated(@Param() params: ParamIdDto, @Query() query: GetUserWithTracksQueryDto) {
         return SendResponse(await catchAsync(this.$usersRelatedService.getUserWithTracks(params.id, query, 'tracksParticipated')));
     }
 }
