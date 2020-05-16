@@ -1,7 +1,14 @@
-import { IsNumberString, IsOptional } from 'class-validator';
+import { IsNumberString, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CommonQueryDto {
+export class GetOneQueryDto {
+    @ApiProperty({ required: false })
+    @IsString()
+    @IsOptional({})
+    fields!: string;
+}
+
+export class GetManyQueryDto extends GetOneQueryDto {
     @ApiProperty({ required: false })
     @IsOptional()
     @IsNumberString()
@@ -11,8 +18,4 @@ export class CommonQueryDto {
     @IsOptional()
     @IsNumberString()
     limit!: number;
-
-    @ApiProperty({ required: false })
-    @IsOptional({})
-    fields!: string;
 }
