@@ -18,7 +18,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import { TracksService } from './tracks.service';
-import { CommonQueryDto } from '../../helpers/common-dtos/common-query.dto';
+import { GetManyQueryDto } from '../../helpers/common-dtos/common-query.dto';
 import { SendResponse } from '../../helpers/utils/send-response';
 import { catchAsync } from '../../helpers/utils/catch-async';
 import { AuthRequiredGuard } from '../../guards/auth-required.guard';

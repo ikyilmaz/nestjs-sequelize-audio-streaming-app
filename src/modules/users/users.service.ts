@@ -5,14 +5,28 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import UserProfile from '../../models/user/user-profile/user-profile.model';
 import { filterObject } from '../../helpers/utils/filter-object';
-import { paginate } from '../../helpers/utils/api-features';
+import { limitFields, paginate } from '../../helpers/utils/api-features';
+import { queryObject } from '../../helpers/utils/query-object';
+import { UserFields as uf } from '../../models/user/user.enums';
+import { GetManyUserQueryDto } from './dto/user-query.dto';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User) private $user: typeof User) {}
+    constructor(@InjectModel(User) private $user: typeof User) {
 
-    getMany = (query: Pick<any, any>) => {
-        return this.$user.scope('public').findAll({ ...paginate(query) });
+    }
+
+    getMany = (query: GetManyUserQueryDto) => {
+        return this.$user.scope('public').findAll({
+            ...paginate(query),
+            attributes: limitFields(query.fields, {
+                _enum: uf,
+                defaults: [uf.id, uf.firstName, uf.lastName, uf.username],
+                disallowedFields: [uf.password, uf.passwordChangedAt, uf.email, uf.role, uf.createdAt, uf.updatedAt,],
+            }),
+            where: queryObject(
+                query, [uf.firstName, uf.lastName, uf.username, uf.photo],),
+        });
     };
 
     get = (id: string) => {
