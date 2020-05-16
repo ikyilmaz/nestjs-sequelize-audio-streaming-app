@@ -7,10 +7,11 @@ import { IsOwnerGuard } from '../guards/is-owner.guard';
 import { UserRoles } from '../models/user/user.enums';
 
 type AuthOptions = {
-    isOwner: ModelCtor<any>
+    isOwner?: ModelCtor<any>,
+    roles?: UserRoles[]
 }
 
-export const Auth = (roles: UserRoles[] = [], options?: AuthOptions) => {
+export const Auth = (options?: AuthOptions) => {
 
     const decorators = [
         ApiBearerAuth(),
@@ -19,8 +20,8 @@ export const Auth = (roles: UserRoles[] = [], options?: AuthOptions) => {
 
     const guards: CanActivate[] | Function[] = [AuthRequiredGuard];
 
-    if (roles.length > 0) {
-        decorators.push(SetMetadata('roles', roles));
+    if (options?.roles?.length > 0) {
+        decorators.push(SetMetadata('roles', options.roles));
 
         guards.push(RestrictToGuard);
     }

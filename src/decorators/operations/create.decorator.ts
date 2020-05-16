@@ -1,7 +1,8 @@
 import { ApiBadRequestResponse, ApiCreatedResponse } from '@nestjs/swagger';
-import { applyDecorators } from '@nestjs/common';
+import { applyDecorators, Post } from '@nestjs/common';
 
-export const CreateOneOperation = () => applyDecorators(
+export const CreateOperation = (path?: string | string[]) => applyDecorators(
     ApiCreatedResponse({ description: 'Created.' }),
     ApiBadRequestResponse({ description: 'Validation failed.' }),
+    Post(path ? path : '/'),
 );
