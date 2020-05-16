@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     Body,
     Controller,
     Delete,
@@ -13,7 +12,6 @@ import {
     SetMetadata,
     UploadedFile,
     UseGuards,
-    UseInterceptors,
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
@@ -25,22 +23,18 @@ import {
     ApiOkResponse,
     ApiOperation, ApiParam,
     ApiTags,
-    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { GetManyQueryDto, GetOneQueryDto } from '../../helpers/common-dtos/common-query.dto';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { AlbumsService } from './albums.service';
 import { SendResponse } from '../../helpers/utils/send-response';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { AuthRequiredGuard } from '../../guards/auth-required.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
-import * as multer from 'multer';
 import { filterObject } from '../../helpers/utils/filter-object';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { catchAsync } from '../../helpers/utils/catch-async';
 import { IsOwnerGuard } from '../../guards/is-owner.guard';
 import Album from '../../models/album/album.model';
-import { GetManyAlbumQueryDto } from './dto/album-query.dto';
+import { GetManyAlbumQueryDto, GetOneAlbumQueryDto } from './dto/album-query.dto';
 
 @ApiTags('albums')
 @Controller('albums')
@@ -88,7 +82,7 @@ export class AlbumsController {
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @ApiParam({ name: 'id', type: 'UUID' })
     @Get('/:id')
-    async get(@Param() params: ParamIdDto, @Query() query: GetOneQueryDto) {
+    async get(@Param() params: ParamIdDto, @Query() query: GetOneAlbumQueryDto) {
         return SendResponse(await catchAsync(this.$albumsService.get(query, params.id)));
     }
 

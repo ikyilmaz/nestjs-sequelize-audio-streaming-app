@@ -8,12 +8,12 @@ import User from '../../models/user/user.model';
 import Track from '../../models/track/track.model';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { queryObject } from '../../helpers/utils/query-object';
-import { GetManyTrackQueryDto } from '../tracks/dto/get-many-track-query.dto';
+import { GetManyTrackQueryDto } from '../tracks/dto/track-query.dto';
 import { AlbumFields as af } from '../../models/album/album.enums';
-import { UserFields as uf } from '../../models/user/user.enums';
-import { TrackFields as tf } from '../../models/track/track.enums';
-import { GetOneQueryDto } from '../../helpers/common-dtos/common-query.dto';
 import { limitAlbumFields } from '../../helpers/field-limiters/album.field-limiters';
+import { GetOneAlbumQueryDto } from './dto/album-query.dto';
+import { limitPublicUserFields } from '../../helpers/field-limiters/user.field-limiters';
+import { limitTrackFields } from '../../helpers/field-limiters/track.field-limiter';
 
 @Injectable()
 export class AlbumsService {
@@ -29,7 +29,7 @@ export class AlbumsService {
         });
     }
 
-    async create(createAlbumDto: CreateAlbumDto) {
+    create(createAlbumDto: CreateAlbumDto) {
         return this.$album.create({
             title: createAlbumDto.title,
             photo: createAlbumDto.photo,
@@ -37,30 +37,30 @@ export class AlbumsService {
         });
     }
 
-    get(query: GetOneQueryDto, id: string) {
+    get(query: GetOneAlbumQueryDto, id: string) {
         return this.$album.findByPk(id, {
             attributes: limitAlbumFields(query.fields),
             include: [
                 {
                     model: User,
                     as: 'owner',
-                    attributes: [uf.id, uf.firstName, uf.lastName, uf.username],
+                    attributes: limitPublicUserFields(query.ownerFields),
                 },
                 {
                     model: User,
                     as: 'artists',
-                    attributes: [uf.id, uf.firstName, uf.lastName, uf.username],
+                    attributes: limitPublicUserFields(query.ownerFields),
                     through: { attributes: [] },
                 },
                 {
                     model: Track,
-                    attributes: [tf.id, tf.title, tf.track, tf.ownerId],
+                    attributes: limitTrackFields(query.trackFields),
                 },
             ],
         });
     }
 
-    async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    update(id: string, updateAlbumDto: UpdateAlbumDto) {
         return this.$album.update(updateAlbumDto, { where: { id } });
     }
 

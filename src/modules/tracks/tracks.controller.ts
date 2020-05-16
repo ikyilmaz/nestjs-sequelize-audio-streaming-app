@@ -1,24 +1,32 @@
 import {
     BadRequestException,
     Body,
-    Controller, Delete,
-    Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Param, Patch,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Param,
+    Patch,
     Post,
-    Query, Req, Res, SetMetadata,
+    Query,
+    SetMetadata,
     UploadedFile,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
 import {
-    ApiBadRequestResponse, ApiBearerAuth,
-    ApiForbiddenResponse, ApiNoContentResponse,
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiForbiddenResponse,
+    ApiNoContentResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
-    ApiOperation, ApiParam,
+    ApiOperation,
+    ApiParam,
     ApiTags,
 } from '@nestjs/swagger';
 import { TracksService } from './tracks.service';
-import { GetManyQueryDto } from '../../helpers/common-dtos/common-query.dto';
 import { SendResponse } from '../../helpers/utils/send-response';
 import { catchAsync } from '../../helpers/utils/catch-async';
 import { AuthRequiredGuard } from '../../guards/auth-required.guard';
@@ -26,10 +34,8 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
-import { GetManyTrackQueryDto } from './dto/get-many-track-query.dto';
-import Album from '../../models/album/album.model';
+import { GetManyTrackQueryDto, GetOneTrackQueryDto } from './dto/track-query.dto';
 import { IsOwnerGuard } from '../../guards/is-owner.guard';
-import { UpdateAlbumDto } from '../albums/dto/update-album.dto';
 import { filterObject } from '../../helpers/utils/filter-object';
 import Track from '../../models/track/track.model';
 import { UpdateTrackDto } from './dto/update-track.dto';
@@ -90,8 +96,8 @@ export class TracksController {
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @UseGuards(AuthRequiredGuard)
     @Get('/:id')
-    async get(@Param() params: ParamIdDto) {
-        return SendResponse(await catchAsync(this.$tracksService.get(params.id)));
+    async get(@Param() params: ParamIdDto, @Query() query: GetOneTrackQueryDto) {
+        return SendResponse(await catchAsync(this.$tracksService.get(params.id, query)));
     }
 
     /**

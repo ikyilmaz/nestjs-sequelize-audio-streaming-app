@@ -9,11 +9,13 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 import User from '../../models/user/user.model';
 import Album from '../../models/album/album.model';
-import { GetManyTrackQueryDto } from './dto/get-many-track-query.dto';
+import { GetManyTrackQueryDto, GetOneTrackQueryDto } from './dto/track-query.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { queryObject } from '../../helpers/utils/query-object';
 import { TrackFields } from '../../models/track/track.enums';
 import moment = require('moment');
+import { limitPublicUserFields } from '../../helpers/field-limiters/user.field-limiters';
+import { limitAlbumFields } from '../../helpers/field-limiters/album.field-limiters';
 
 @Injectable()
 export class TracksService {
@@ -50,23 +52,23 @@ export class TracksService {
         });
     }
 
-    get(id: string) {
+    get(id: string, query: GetOneTrackQueryDto) {
         return this.$track.findByPk(id, {
             include: [
                 {
                     model: User,
                     as: 'owner',
-                    attributes: ['id', 'firstName', 'lastName', 'username'],
+                    attributes: limitPublicUserFields(query.ownerFields),
                 },
                 {
                     model: User,
                     as: 'artists',
-                    attributes: ['id', 'firstName', 'lastName', 'username'],
+                    attributes: limitPublicUserFields(query.artistFields),
                     through: { attributes: [] },
                 },
                 {
                     model: Album,
-                    attributes: ['id', 'title', 'ownerId'],
+                    attributes: limitAlbumFields(query.albumFields),
                 },
             ],
         });
