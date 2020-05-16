@@ -29,7 +29,7 @@ import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { UsersService } from './users.service';
 import { catchAsync } from '../../helpers/utils/catch-async';
 import { SendResponse } from '../../helpers/utils/send-response';
-import { GetManyQueryDto } from '../../helpers/common-dtos/common-query.dto';
+import { GetManyQueryDto, GetOneQueryDto } from '../../helpers/common-dtos/common-query.dto';
 import { AuthRequiredGuard } from '../../guards/auth-required.guard';
 import { RestrictToGuard } from '../../guards/restrict-to.guard';
 import { GetManyUserQueryDto } from './dto/user-query.dto';
@@ -81,8 +81,8 @@ export class UsersController {
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @ApiParam({ name: 'id', type: 'UUID' })
     @Get('/:id')
-    async get(@Param() params: ParamIdDto) {
-        return SendResponse(await catchAsync(this.$usersService.get(params.id)));
+    async get(@Param() params: ParamIdDto, @Query() query: GetOneQueryDto) {
+        return SendResponse(await catchAsync(this.$usersService.get(query, params.id)));
     }
 
     /**

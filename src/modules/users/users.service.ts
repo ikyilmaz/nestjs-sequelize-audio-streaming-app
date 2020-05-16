@@ -9,6 +9,7 @@ import { limitFields, paginate } from '../../helpers/utils/api-features';
 import { queryObject } from '../../helpers/utils/query-object';
 import { UserFields as uf } from '../../models/user/user.enums';
 import { GetManyUserQueryDto } from './dto/user-query.dto';
+import { GetOneQueryDto } from '../../helpers/common-dtos/common-query.dto';
 
 @Injectable()
 export class UsersService {
@@ -22,15 +23,20 @@ export class UsersService {
             attributes: limitFields(query.fields, {
                 _enum: uf,
                 defaults: [uf.id, uf.firstName, uf.lastName, uf.username],
-                disallowedFields: [uf.password, uf.passwordChangedAt, uf.email, uf.role, uf.createdAt, uf.updatedAt,],
+                disallowedFields: [uf.password, uf.passwordChangedAt, uf.email, uf.role, uf.createdAt, uf.updatedAt],
             }),
-            where: queryObject(
-                query, [uf.firstName, uf.lastName, uf.username, uf.photo],),
+            where: queryObject(query, [uf.firstName, uf.lastName, uf.username, uf.photo]),
         });
     };
 
-    get = (id: string) => {
-        return this.$user.scope('public').findByPk(id);
+    get = (query: GetOneQueryDto,id: string) => {
+        return this.$user.scope('public').findByPk(id, {
+            attributes: limitFields(query.fields, {
+                _enum: uf,
+                defaults: [uf.id, uf.firstName, uf.lastName, uf.username],
+                disallowedFields: [uf.password, uf.passwordChangedAt, uf.email, uf.role, uf.createdAt, uf.updatedAt],
+            }),
+        });
     };
 
     create = async (createUserDto: CreateUserDto) => {

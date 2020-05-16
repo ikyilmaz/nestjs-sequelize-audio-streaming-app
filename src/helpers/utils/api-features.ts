@@ -16,8 +16,14 @@ export const limitFields = (
             arrFields.push(field);
         });
 
-        // ? if length is more than 0 then return arrFields else return defaults. If defaults do not exists then return all fields
-        return arrFields.length > 0 ? arrFields : defaults ? defaults : Object.keys(_enum);
+        // ? if length is more than 0 then return arrFields else return defaults.
+        // !                                                                          Make array unique
+        if (arrFields.length > 0) return arrFields.filter((arrField, index, self) => self.indexOf(arrField) === index);
+
+        // ? If defaults do not exists then return all fields
+        else if (defaults) return defaults;
+
+        return Object.keys(_enum);
 
     }
 

@@ -9,7 +9,9 @@ import Track from '../../models/track/track.model';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { queryObject } from '../../helpers/utils/query-object';
 import { GetManyTrackQueryDto } from '../tracks/dto/get-many-track-query.dto';
-import { AlbumFields } from '../../models/album/album.enums';
+import { AlbumFields as af } from '../../models/album/album.enums';
+import { UserFields as uf } from '../../models/user/user.enums';
+import { TrackFields as tf } from '../../models/track/track.enums';
 import { GetOneQueryDto } from '../../helpers/common-dtos/common-query.dto';
 
 @Injectable()
@@ -20,10 +22,10 @@ export class AlbumsService {
     getMany(query: GetManyTrackQueryDto) {
         return this.$album.findAll({
             ...paginate(query),
-            where: queryObject(query, ['title', 'ownerId']),
+            where: queryObject(query, [ af.title, af.ownerId]),
             attributes: limitFields(query.fields, {
-                _enum: AlbumFields,
-                defaults: ['id', 'title', 'photo', 'ownerId'],
+                _enum: af,
+                defaults: [af.id, af.title, af.photo, af.ownerId],
             }),
         });
     }
@@ -39,24 +41,24 @@ export class AlbumsService {
     get(query: GetOneQueryDto, id: string) {
         return this.$album.findByPk(id, {
             attributes: limitFields(query.fields, {
-                _enum: AlbumFields,
-                defaults: ['id', 'title', 'photo', 'ownerId'],
+                _enum: af,
+                defaults: [af.id, af.title, af.photo, af.ownerId],
             }),
             include: [
                 {
                     model: User,
                     as: 'owner',
-                    attributes: ['id', 'firstName', 'lastName', 'username'],
+                    attributes: [uf.id, uf.firstName, uf.lastName, uf.username],
                 },
                 {
                     model: User,
                     as: 'artists',
-                    attributes: ['id', 'firstName', 'lastName', 'username'],
+                    attributes: [uf.id, uf.firstName, uf.lastName, uf.username],
                     through: { attributes: [] },
                 },
                 {
                     model: Track,
-                    attributes: ['id', 'title', 'track', 'ownerId'],
+                    attributes: [tf.id, tf.title, tf.track, tf.ownerId],
                 },
             ],
         });
