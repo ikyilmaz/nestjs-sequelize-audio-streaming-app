@@ -22,3 +22,9 @@ export class GetUserWithAlbumsQueryDto extends GetOneQueryDto {
     @IsOptional()
     albumFields: string;
 }
+
+export class GetUserWithTracksQueryDto extends GetOneQueryDto {
+    @ApiProperty({ required: false })
+    @IsOptional()
+    trackFields: string;
+}
