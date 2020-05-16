@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import Album from '../../models/album/album.model';
-import { limitFields, paginate } from '../../helpers/utils/api-features';
+import { paginate } from '../../helpers/utils/api-features';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { CurrentUserService } from '@app/current-user';
 import User from '../../models/user/user.model';
@@ -13,20 +13,19 @@ import { AlbumFields as af } from '../../models/album/album.enums';
 import { UserFields as uf } from '../../models/user/user.enums';
 import { TrackFields as tf } from '../../models/track/track.enums';
 import { GetOneQueryDto } from '../../helpers/common-dtos/common-query.dto';
+import { limitAlbumFields } from '../../helpers/field-limiters/album.field-limiters';
 
 @Injectable()
 export class AlbumsService {
     constructor(@InjectModel(Album) private $album: typeof Album, private $currentUser: CurrentUserService) {
+
     }
 
     getMany(query: GetManyTrackQueryDto) {
         return this.$album.findAll({
             ...paginate(query),
-            where: queryObject(query, [ af.title, af.ownerId]),
-            attributes: limitFields(query.fields, {
-                _enum: af,
-                defaults: [af.id, af.title, af.photo, af.ownerId],
-            }),
+            where: queryObject(query, [af.title, af.ownerId]),
+            attributes: limitAlbumFields(query.fields),
         });
     }
 
@@ -40,10 +39,7 @@ export class AlbumsService {
 
     get(query: GetOneQueryDto, id: string) {
         return this.$album.findByPk(id, {
-            attributes: limitFields(query.fields, {
-                _enum: af,
-                defaults: [af.id, af.title, af.photo, af.ownerId],
-            }),
+            attributes: limitAlbumFields(query.fields),
             include: [
                 {
                     model: User,
