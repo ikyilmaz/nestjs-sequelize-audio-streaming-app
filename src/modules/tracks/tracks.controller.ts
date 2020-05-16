@@ -2,43 +2,29 @@ import {
     BadRequestException,
     Body,
     Controller,
-    Delete,
-    Get,
-    HttpCode,
-    HttpStatus,
     Param,
-    Patch,
-    Post,
     Query,
-    SetMetadata,
     UploadedFile,
-    UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import {
-    ApiBadRequestResponse,
-    ApiBearerAuth,
-    ApiForbiddenResponse,
-    ApiNoContentResponse,
-    ApiNotFoundResponse,
-    ApiOkResponse,
-    ApiOperation,
-    ApiParam,
-    ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TracksService } from './tracks.service';
 import { SendResponse } from '../../helpers/utils/send-response';
 import { catchAsync } from '../../helpers/utils/catch-async';
-import { AuthRequiredGuard } from '../../guards/auth-required.guard';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { GetManyTrackQueryDto, GetOneTrackQueryDto } from './dto/track-query.dto';
-import { IsOwnerGuard } from '../../guards/is-owner.guard';
 import { filterObject } from '../../helpers/utils/filter-object';
 import Track from '../../models/track/track.model';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { GetOperation } from '../../decorators/operations/get.decorator';
+import { GetManyOperation } from '../../decorators/operations/get-many.decorator';
+import { Auth } from '../../decorators/auth.decorator';
+import { CreateOperation } from '../../decorators/operations/create.decorator';
+import { UpdateOperation } from '../../decorators/operations/update.decorator';
+import { DeleteOperation } from '../../decorators/operations/delete.decorator';
 
 @Controller('tracks')
 @ApiTags('tracks')
@@ -51,11 +37,7 @@ export class TracksController {
      *  --> GET MANY TRACK
      *  @description Returns tracks
      *  @statusCodes 200, 404, 400 */
-    @ApiOperation({ summary: 'GET MANY TRACK' })
-    @ApiOkResponse({ description: 'Tracks found.' })
-    @ApiNotFoundResponse({ description: 'Not found any track.' })
-    @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @Get('/')
+    @ApiOperation({ summary: 'GET MANY TRACK' }) @GetManyOperation()
     async getMany(@Query() query: GetManyTrackQueryDto) {
         return SendResponse(await catchAsync(this.$tracksService.getMany(query)));
     }
@@ -64,12 +46,8 @@ export class TracksController {
      *  --> CREATE TRACK
      *  @description Creates a track and returns it
      *  @permissions Authenticated users
-     *  @statusCodes 200, 404, 400 */
-    @ApiOperation({ summary: 'CREATE TRACK' })
-    @ApiBearerAuth()
-    @ApiOkResponse({ description: 'Track created.' })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
-    @ApiBadRequestResponse({ description: 'Validation failed.' })
+     *  @statusCodes 201, 404, 400 */
+    @ApiOperation({ summary: 'CREATE TRACK' }) @Auth() @CreateOperation()
     @UseInterceptors(FileInterceptor('track', {
         storage: multer.memoryStorage(),
         fileFilter: (req, file, cb) => {
@@ -80,8 +58,6 @@ export class TracksController {
             cb(null, true);
         },
     }))
-    @UseGuards(AuthRequiredGuard)
-    @Post('/')
     async create(@Body() createTrackDto: CreateTrackDto, @UploadedFile() file) {
         if (!file) throw new BadRequestException('please specify field track');
 
@@ -92,11 +68,7 @@ export class TracksController {
      *  --> GET ONE TRACK
      *  @description Returns one track
      *  @statusCodes 200, 404, 400 */
-    @ApiOperation({ summary: 'GET ONE TRACK' })
-    @ApiOkResponse({ description: 'Track found.' })
-    @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @UseGuards(AuthRequiredGuard)
-    @Get('/:id')
+    @ApiOperation({ summary: 'GET ONE TRACK' }) @GetOperation()
     async get(@Param() params: ParamIdDto, @Query() query: GetOneTrackQueryDto) {
         return SendResponse(await catchAsync(this.$tracksService.get(params.id, query)));
     }
@@ -106,16 +78,7 @@ export class TracksController {
      *  @description Updates a track with the specified id
      *  @permissions authenticated users, owners
      *  @statusCodes 200, 403, 400, 404 */
-    @ApiOperation({ summary: 'UPDATE TRACK' })
-    @ApiBearerAuth()
-    @ApiOkResponse({ description: 'Track updated.' })
-    @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the track.' })
-    @ApiNotFoundResponse({ description: 'Not found any track.' })
-    @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @ApiParam({ name: 'id', type: 'UUID' })
-    @SetMetadata('model', Track)
-    @UseGuards(AuthRequiredGuard, IsOwnerGuard)
-    @Patch('/:id')
+    @ApiOperation({ summary: 'UPDATE TRACK' }) @Auth({ isOwner: Track }) @UpdateOperation()
     async update(@Param() params: ParamIdDto, @Body() updateTrackDto: UpdateTrackDto, @UploadedFile() file) {
         await catchAsync(this.$tracksService.update(params.id, filterObject(updateTrackDto, ['albumId'])));
     }
@@ -125,17 +88,7 @@ export class TracksController {
      *  @description Deletes a track with the specified id
      *  @permissions authenticated users, owners
      *  @statusCodes 204, 404, 400 */
-    @ApiOperation({ summary: 'DELETE TRACK' })
-    @ApiBearerAuth()
-    @ApiNoContentResponse({ description: 'Track deleted.' })
-    @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the track.' })
-    @ApiNotFoundResponse({ description: 'Not found any track.' })
-    @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @ApiParam({ name: 'id', type: 'UUID' })
-    @HttpCode(HttpStatus.NO_CONTENT)
-    @SetMetadata('model', Track)
-    @UseGuards(AuthRequiredGuard, IsOwnerGuard)
-    @Delete('/:id')
+    @ApiOperation({ summary: 'DELETE TRACK' }) @Auth({ isOwner: Track }) @DeleteOperation()
     async delete(@Param() params: ParamIdDto) {
         await catchAsync(this.$tracksService.delete(params.id));
     }

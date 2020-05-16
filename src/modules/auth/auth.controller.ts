@@ -8,7 +8,8 @@ import {
     BadRequestException,
     Res,
     UnauthorizedException,
-    Patch, UseGuards, InternalServerErrorException,
+    Patch,
+    InternalServerErrorException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { TokenService } from '@app/token';
@@ -21,14 +22,14 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { filterObject } from '../../helpers/utils/filter-object';
 import { SignInDto } from './dto/sign-in.dto';
 import {
-    ApiBadRequestResponse, ApiBearerAuth,
+    ApiBadRequestResponse,
     ApiCreatedResponse,
     ApiOkResponse,
     ApiOperation,
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthRequiredGuard } from '../../guards/auth-required.guard';
+import { Auth } from '../../decorators/auth.decorator';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -87,14 +88,11 @@ export class AuthController {
      *  @permissions authenticated users
      *  @statusCodes 200, 401, 400 */
     @ApiOperation({ summary: 'UPDATE PASSWORD' })
-    @ApiBearerAuth()
     @ApiOkResponse({ description: 'Password updated.' })
-    @ApiUnauthorizedResponse({ description: 'Auth required.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @UseGuards(AuthRequiredGuard)
-    @Patch('/update-password')
+    @Auth() @Patch('/update-password')
     async updatePassword() {
-        throw new InternalServerErrorException()
+        throw new InternalServerErrorException();
     }
 
     /**
@@ -102,14 +100,11 @@ export class AuthController {
      *  @permissions authenticated users
      *  @statusCodes 200, 401, 400 */
     @ApiOperation({ summary: 'UPDATE EMAIL' })
-    @ApiBearerAuth()
     @ApiOkResponse({ description: 'Verification email sent.' })
-    @ApiUnauthorizedResponse({ description: 'Auth required.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @UseGuards(AuthRequiredGuard)
-    @Patch('/update-email')
+    @Auth() @Patch('/update-email')
     async updateEmail() {
-        throw new InternalServerErrorException()
+        throw new InternalServerErrorException();
     }
 
     /**
@@ -117,14 +112,11 @@ export class AuthController {
      *  @permissions authenticated users
      *  @statusCodes 200, 401, 400 */
     @ApiOperation({ summary: 'UPDATE USER' })
-    @ApiBearerAuth()
     @ApiOkResponse({ description: 'User updated.' })
-    @ApiUnauthorizedResponse({ description: 'Auth required.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
-    @UseGuards(AuthRequiredGuard)
-    @Patch('/update')
+    @Auth() @Patch('/update')
     async updateMe() {
-        throw new InternalServerErrorException()
+        throw new InternalServerErrorException();
     }
 
     /**
@@ -135,7 +127,7 @@ export class AuthController {
     @ApiOkResponse({ description: 'Current user found or not.' })
     @Get('/current-user')
     async getCurrentUser() {
-        throw new InternalServerErrorException()
+        throw new InternalServerErrorException();
     }
 
     private async createAndSendToken(user: User, res: Response) {
