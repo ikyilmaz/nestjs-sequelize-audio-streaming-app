@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import Album from '../../models/album/album.model';
-import { paginate } from '../../helpers/utils/paginate';
+import { paginate } from '../../helpers/utils/api-features';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { CurrentUserService } from '@app/current-user';
 import User from '../../models/user/user.model';
@@ -14,7 +14,10 @@ export class AlbumsService {
     }
 
     getMany(query: Pick<any, any>) {
-        return this.$album.findAll({ ...paginate(query), attributes: ['id', 'title', 'photo', 'ownerId'] });
+        return this.$album.findAll({
+            ...paginate(query),
+            attributes: ['id', 'title', 'photo', 'ownerId']
+        });
     }
 
     async create(createAlbumDto: CreateAlbumDto) {

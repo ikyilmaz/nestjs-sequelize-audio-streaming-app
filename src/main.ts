@@ -7,11 +7,11 @@ import { setupSwagger } from './swagger';
 (async function() {
     const app = await NestFactory.create(AppModule);
 
-    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalPipes(new ValidationPipe({ transform: true, }));
 
     app.setGlobalPrefix('api/v1');
 
-    setupSwagger(app)
+    setupSwagger(app);
 
     await app.listen(process.env.PORT);
 })()

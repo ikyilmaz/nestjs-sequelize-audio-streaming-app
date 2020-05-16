@@ -5,7 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import UserProfile from '../../models/user/user-profile/user-profile.model';
 import { filterObject } from '../../helpers/utils/filter-object';
-import { paginate } from '../../helpers/utils/paginate';
+import { paginate } from '../../helpers/utils/api-features';
 
 @Injectable()
 export class UsersService {

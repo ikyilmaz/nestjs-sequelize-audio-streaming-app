@@ -29,7 +29,7 @@ import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { UsersService } from './users.service';
 import { catchAsync } from '../../helpers/utils/catch-async';
 import { SendResponse } from '../../helpers/utils/send-response';
-import { PaginateQueryDto } from '../../helpers/common-dtos/paginate-query.dto';
+import { CommonQueryDto } from '../../helpers/common-dtos/common-query.dto';
 import { AuthRequiredGuard } from '../../guards/auth-required.guard';
 import { RestrictToGuard } from '../../guards/restrict-to.guard';
 
@@ -49,7 +49,7 @@ export class UsersController {
     @ApiNotFoundResponse({ description: 'Not found any user.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Get('/')
-    async getMany(@Query() query: PaginateQueryDto) {
+    async getMany(@Query() query: CommonQueryDto) {
         return SendResponse(await catchAsync(this.$usersService.getMany(query)));
     }
 

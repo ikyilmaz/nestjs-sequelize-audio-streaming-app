@@ -1,28 +1,34 @@
 import {
     Body,
-    Controller, Delete,
-    Get, HttpCode, HttpStatus,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    HttpStatus,
     InternalServerErrorException,
     NotFoundException,
-    Param, Post,
+    Param,
+    Post,
     Req,
     Res,
-    SetMetadata, UseGuards,
+    SetMetadata,
+    UseGuards,
 } from '@nestjs/common';
 import {
     ApiBadRequestResponse,
-    ApiBearerAuth, ApiForbiddenResponse,
+    ApiBearerAuth,
+    ApiForbiddenResponse,
     ApiNoContentResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
-    ApiOperation, ApiParam,
+    ApiOperation,
+    ApiParam,
     ApiTags,
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { ReadStream, Stats } from 'fs';
 import * as fs from 'fs';
 import { TracksRelatedService } from './tracks-related.service';
-import Album from '../../../models/album/album.model';
 import { AuthRequiredGuard } from '../../../guards/auth-required.guard';
 import { IsOwnerGuard } from '../../../guards/is-owner.guard';
 import { ParamIdDto } from '../../../helpers/common-dtos/param-id.dto';

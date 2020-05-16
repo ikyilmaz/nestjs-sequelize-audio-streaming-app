@@ -27,7 +27,7 @@ import {
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { PaginateQueryDto } from '../../helpers/common-dtos/paginate-query.dto';
+import { CommonQueryDto } from '../../helpers/common-dtos/common-query.dto';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { AlbumsService } from './albums.service';
 import { SendResponse } from '../../helpers/utils/send-response';
@@ -57,7 +57,7 @@ export class AlbumsController {
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
     @Get('/')
-    async getMany(@Query() query: PaginateQueryDto) {
+    async getMany(@Query() query: CommonQueryDto) {
         return SendResponse(await catchAsync(this.$albumsService.getMany(query)));
     }
 
@@ -98,7 +98,7 @@ export class AlbumsController {
      *  @statusCodes 200, 403, 400, 404 */
     @ApiOperation({ summary: 'UPDATE ALBUM' })
     @ApiBearerAuth()
-    @ApiOkResponse({ description: 'User updated.' })
+    @ApiOkResponse({ description: 'Album updated.' })
     @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the album.' })
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
@@ -117,7 +117,7 @@ export class AlbumsController {
      *  @statusCodes 204, 404, 400 */
     @ApiOperation({ summary: 'DELETE ALBUM' })
     @ApiBearerAuth()
-    @ApiNoContentResponse({ description: 'User deleted.' })
+    @ApiNoContentResponse({ description: 'Album deleted.' })
     @ApiForbiddenResponse({ description: 'If the request\'s owner is not the owner of the album.' })
     @ApiNotFoundResponse({ description: 'Not found any album.' })
     @ApiBadRequestResponse({ description: 'Validation failed.' })
