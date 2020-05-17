@@ -1,4 +1,4 @@
-import { Controller, Query, Req } from '@nestjs/common';
+import { Controller, HttpStatus, Query, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUserService } from './current-user.service';
 import { GetOperation } from '../../decorators/operations/get.decorator';
@@ -22,7 +22,11 @@ export class CurrentUserController {
 
     }
 
-    @ApiOperation({ description: 'GET CURRENT USER' })
+    /**
+     *  --> GET CURRENT USER
+     *  @description Returns the current user if exists. if not then returns null
+     *  @statusCodes 200, 400 */
+    @ApiOperation({ summary: 'GET CURRENT USER' })
     @GetOperation({ path: '/', params: false })
     async getCurrentUser(@Query() query: GetCurrentUserQueryDto, @Req() req: Request) {
 
@@ -56,19 +60,34 @@ export class CurrentUserController {
         return { status: 'success', data: user };
     }
 
-    @ApiOperation({ description: 'GET CURRENT USER\'S PROFILE' })
+    /**
+     *  --> GET CURRENT USER'S PROFILE
+     *  @description Returns the current user's profile
+     *  @permissions authenticated users
+     *  @statusCodes 200, 403, 400 */
+    @ApiOperation({ summary: 'GET CURRENT USER\'S PROFILE' })
     @Auth() @GetOperation({ path: '/user-profile', params: false })
     async getProfile(@Query() query: GetOneQueryDto) {
         return SendResponse(await catchAsync(this.$currentUserService.getProfile(query)));
     }
 
-    @ApiOperation({ description: 'GET CURRENT USER\'S ALBUMS' })
+    /**
+     *  --> GET CURRENT USER'S ALBUMS
+     *  @description Returns the current user's albums
+     *  @permissions authenticated users
+     *  @statusCodes 200, 403, 400, 404 */
+    @ApiOperation({ summary: 'GET CURRENT USER\'S ALBUMS' })
     @Auth() @GetOperation({ path: '/albums', params: false })
     async getAlbums(@Query() query: GetCurrentUsersAlbumsQueryDto) {
         return SendResponse(await catchAsync(this.$currentUserService.getAlbums(query)));
     }
 
-    @ApiOperation({ description: 'GET CURRENT USER\'S TRACKS' })
+    /**
+     *  --> GET CURRENT USER'S TRACKS
+     *  @description Returns the current user's tracks
+     *  @permissions authenticated users
+     *  @statusCodes 200, 403, 400, 404 */
+    @ApiOperation({ summary: 'GET CURRENT USER\'S TRACKS' })
     @Auth() @GetOperation({ path: '/tracks', params: false })
     async getTracks(@Query() query: GetCurrentUsersTracksQueryDto) {
         return SendResponse(await catchAsync(this.$currentUserService.getTracks(query)));
