@@ -1,13 +1,9 @@
-import { Controller, HttpStatus, Query, Req } from '@nestjs/common';
+import { Controller, Query, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUserService } from './current-user.service';
 import { GetOperation } from '../../decorators/operations/get.decorator';
 import { catchAsync } from '../../helpers/utils/catch-async';
-import {
-    GetCurrentUserQueryDto,
-    GetCurrentUsersAlbumsQueryDto,
-    GetCurrentUsersTracksQueryDto,
-} from './dto/current-user-query.dto';
+import { GetCurrentUserQueryDto, GetCurrentUsersAlbumsQueryDto, GetCurrentUsersTracksQueryDto } from './dto/current-user-query.dto';
 import { Request } from 'express';
 import { promisify } from 'util';
 import * as jwt from 'jsonwebtoken';
@@ -18,9 +14,7 @@ import { Auth } from '../../decorators/auth.decorator';
 @Controller('current-user')
 @ApiTags('current-user')
 export class CurrentUserController {
-    constructor(private $currentUserService: CurrentUserService) {
-
-    }
+    constructor(private $currentUserService: CurrentUserService) {}
 
     /**
      *  --> GET CURRENT USER
@@ -29,7 +23,6 @@ export class CurrentUserController {
     @ApiOperation({ summary: 'GET CURRENT USER' })
     @GetOperation({ path: '/', params: false })
     async getCurrentUser(@Query() query: GetCurrentUserQueryDto, @Req() req: Request) {
-
         const noUserFound = { status: 'success', user: null };
 
         let token: string;
@@ -65,8 +58,9 @@ export class CurrentUserController {
      *  @description Returns the current user's profile
      *  @permissions authenticated users
      *  @statusCodes 200, 403, 400 */
-    @ApiOperation({ summary: 'GET CURRENT USER\'S PROFILE' })
-    @Auth() @GetOperation({ path: '/user-profile', params: false })
+    @ApiOperation({ summary: "GET CURRENT USER'S PROFILE" })
+    @Auth()
+    @GetOperation({ path: '/user-profile', params: false })
     async getProfile(@Query() query: GetOneQueryDto) {
         return SendResponse(await catchAsync(this.$currentUserService.getProfile(query)));
     }
@@ -76,8 +70,9 @@ export class CurrentUserController {
      *  @description Returns the current user's albums
      *  @permissions authenticated users
      *  @statusCodes 200, 403, 400, 404 */
-    @ApiOperation({ summary: 'GET CURRENT USER\'S ALBUMS' })
-    @Auth() @GetOperation({ path: '/albums', params: false })
+    @ApiOperation({ summary: "GET CURRENT USER'S ALBUMS" })
+    @Auth()
+    @GetOperation({ path: '/albums', params: false })
     async getAlbums(@Query() query: GetCurrentUsersAlbumsQueryDto) {
         return SendResponse(await catchAsync(this.$currentUserService.getAlbums(query)));
     }
@@ -87,8 +82,9 @@ export class CurrentUserController {
      *  @description Returns the current user's tracks
      *  @permissions authenticated users
      *  @statusCodes 200, 403, 400, 404 */
-    @ApiOperation({ summary: 'GET CURRENT USER\'S TRACKS' })
-    @Auth() @GetOperation({ path: '/tracks', params: false })
+    @ApiOperation({ summary: "GET CURRENT USER'S TRACKS" })
+    @Auth()
+    @GetOperation({ path: '/tracks', params: false })
     async getTracks(@Query() query: GetCurrentUsersTracksQueryDto) {
         return SendResponse(await catchAsync(this.$currentUserService.getTracks(query)));
     }

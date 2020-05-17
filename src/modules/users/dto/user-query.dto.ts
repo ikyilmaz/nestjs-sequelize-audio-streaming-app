@@ -15,22 +15,3 @@ export class GetManyUserQueryDto extends GetManyQueryDto {
     @IsOptional()
     username: string;
 }
-
-
-export class GetUserWithAlbumsQueryDto extends GetOneQueryDto {
-    @ApiProperty({ required: false })
-    @IsOptional()
-    albumFields: string;
-}
-
-export class GetUserWithTracksQueryDto extends GetOneQueryDto {
-    @ApiProperty({ required: false })
-    @IsOptional()
-    trackFields: string;
-}
-
-export class GetUserWithProfileQueryDto extends GetOneQueryDto{
-    @ApiProperty({ required: false })
-    @IsOptional()
-    profileFields: string;
-}
