@@ -1,9 +1,13 @@
-import { Controller,  Param, Query } from '@nestjs/common';
+import { Controller, Param, Query } from '@nestjs/common';
 import { UsersRelatedService } from './users-related.service';
 import { SendResponse } from '../../../helpers/utils/send-response';
 import { catchAsync } from '../../../helpers/utils/catch-async';
 import { ParamIdDto } from '../../../helpers/common-dtos/param-id.dto';
-import { GetUserWithAlbumsQueryDto, GetUserWithTracksQueryDto } from '../dto/user-query.dto';
+import {
+    GetUserWithAlbumsQueryDto,
+    GetUserWithProfileQueryDto,
+    GetUserWithTracksQueryDto,
+} from '../dto/user-query.dto';
 import {
     ApiOperation,
     ApiTags,
@@ -51,5 +55,14 @@ export class UsersRelatedController {
     @ApiOperation({ summary: 'GET USER WITH TRACKS FEATURING HIM' }) @GetOperation('/:id/tracks-participated')
     async getUserWithTracksParticipated(@Param() params: ParamIdDto, @Query() query: GetUserWithTracksQueryDto) {
         return SendResponse(await catchAsync(this.$usersRelatedService.getUserWithTracks(params.id, query, 'tracksParticipated')));
+    }
+
+    /**
+     * --> GET USER WITH PROFILE
+     * @description Returns user with profile
+     * @statusCodes 200, 400, 404 */
+    @ApiOperation({ summary: 'GET USER WITH PROFILE' }) @GetOperation('/:id/profile')
+    async getUserWithProfile(@Param() params: ParamIdDto, @Query() query: GetUserWithProfileQueryDto) {
+        return SendResponse(await catchAsync(this.$usersRelatedService.getUserWithProfile(params.id, query)));
     }
 }
