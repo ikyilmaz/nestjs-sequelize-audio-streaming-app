@@ -1,8 +1,15 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+    <a 
+    href="http://nestjs.com/"
+    target="blank">
+        <img 
+        src="https://nestjs.com/img/logo_text.svg" 
+        width="320" 
+        alt="Nest Logo" />
+    </a>
 </p>
 
-## Description
+<br>
 
 > ### Technologies implemented:
 
@@ -10,11 +17,17 @@
 -   [JWT](https://jwt.io/)
 -   [Swagger](https://swagger.io/)
 
+<br>
+
+
 > ## Installation
 
 ```bash
 $ npm install
 ```
+
+<br>
+
 
 > ## Setting up the database for development and test
 
@@ -26,6 +39,8 @@ MySQL database connection options are shown in the following table:
 | Port     | 3306        | 3306      |
 | Username | root        | root      |
 | Database | music       | music     |
+
+<br>
 
 > ## Running the app
 
@@ -39,6 +54,7 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+<br>
 
 > ### Other commands
 
@@ -50,6 +66,8 @@ $ npm run format
 $ npm run lint
 
 ```
+
+<br>
 
 > ## Development Configuration
 
@@ -65,6 +83,8 @@ JWT_EXPIRES_IN=90d
 PORT=8080
 HOST=localhost
 ```
+
+<br>
 
 > # Swagger API docs
 
