@@ -6,6 +6,7 @@ import User from '../models/user/user.model';
 import { catchAsync } from '../helpers/utils/catch-async';
 import { promisify } from 'util';
 import * as jwt from 'jsonwebtoken';
+import * as chalk from 'chalk';
 
 @Injectable()
 export class AuthRequiredGuard implements CanActivate {
@@ -13,7 +14,7 @@ export class AuthRequiredGuard implements CanActivate {
     }
 
     async canActivate(context: ExecutionContext) {
-        console.log('AuthRequired START');
+        console.log(chalk.blueBright('--> AuthRequired START'));
 
         const req = context.switchToHttp().getRequest<Request>();
         this.$user.findByPk();
@@ -47,7 +48,7 @@ export class AuthRequiredGuard implements CanActivate {
 
         this.$currentUserService.setUser = user;
 
-        console.log('AuthRequired END');
+        console.log(chalk.blueBright('--> AuthRequired END'));
 
         return true;
     }

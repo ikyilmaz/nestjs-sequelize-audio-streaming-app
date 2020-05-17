@@ -1,9 +1,10 @@
 export const limitFields = (
     fields: string,
-    { defaults = [], _enum, disallowedFields = [] }: Partial<{
+    { defaults = [], _enum, disallowedFields = [], must = [] }: Partial<{
         defaults?: string[],
         _enum?: any,
         disallowedFields: string[],
+        must?: string[]
     }>,
 ): string[] => {
     if (fields) {
@@ -15,6 +16,8 @@ export const limitFields = (
 
             arrFields.push(field);
         });
+
+        if (must.length > 0) must.forEach(field => arrFields.push(field));
 
         // ? if length is more than 0 then return arrFields else return defaults.
         // !                                                                          Make array unique
