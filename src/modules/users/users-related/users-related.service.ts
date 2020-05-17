@@ -3,45 +3,69 @@ import { InjectModel } from '@nestjs/sequelize';
 import User from '../../../models/user/user.model';
 import Album from '../../../models/album/album.model';
 import Track from '../../../models/track/track.model';
-import { limitPublicUserFields } from '../../../helpers/field-limiters/user.field-limiters';
 import { limitAlbumFields } from '../../../helpers/field-limiters/album.field-limiters';
-import { limitTrackFields } from '../../../helpers/field-limiters/track.field-limiter';
-import {
-    GetUserWithAlbumsQueryDto,
-    GetUserWithProfileQueryDto,
-    GetUserWithTracksQueryDto,
-} from '../dto/user-query.dto';
 import { UserProfileFields as upf } from '../../../models/user/user-profile/user-profile.enums';
 import { limitFields } from '../../../helpers/utils/api-features';
 import UserProfile from '../../../models/user/user-profile/user-profile.model';
+import { FindOptions } from 'sequelize/types';
+import { GetOneQueryDto } from 'src/helpers/common-dtos/common-query.dto';
 
 @Injectable()
 export class UsersRelatedService {
-    constructor(@InjectModel(User) private $user: typeof User) {
+    constructor(
+        @InjectModel(User) private $user: typeof User,
+        @InjectModel(Track) private $track: typeof Track,
+        @InjectModel(Album) private $album: typeof Album,
+        @InjectModel(UserProfile) private $userProfile: typeof UserProfile,
+    ) {}
 
+    getAlbums(id: string, query: GetOneQueryDto, as: 'albumsOwned' | 'albumsParticipated') {
+        let findOptions: FindOptions = {
+            attributes: limitAlbumFields(query.fields),
+        };
+
+        // ? if user wants to albums as owner then simply find with ownerId
+        if (as == 'albumsOwned') findOptions.where = { ownerId: id };
+        // ? if user wants to albums as artist
+        else if (as == 'albumsParticipated')
+            findOptions.include = [
+                {
+                    model: User,
+                    as: 'artists',
+                    attributes: [],
+                    required: true,
+                    where: { id },
+                },
+            ];
+
+        return this.$album.findAll(findOptions);
     }
 
-    getUserWithAlbums(id: string, query: GetUserWithAlbumsQueryDto, as: 'albumsOwned' | 'albumsParticipated') {
-        return this.$user.findByPk(id, {
-            attributes: limitPublicUserFields(query.fields),
-            include: [{ model: Album, as, attributes: limitAlbumFields(query.albumFields) }],
-        });
+    getTracks(id: string, query: GetOneQueryDto, as: 'tracksOwned' | 'tracksParticipated') {
+        let findOptions: FindOptions = {
+            attributes: limitAlbumFields(query.fields),
+        };
+
+        // ? if user wants to tracks as owner then simply find with ownerId
+        if (as == 'tracksOwned') findOptions.where = { ownerId: id };
+        // ? if user wants to tracks as artist
+        else if (as == 'tracksParticipated')
+            findOptions.include = [
+                {
+                    model: User,
+                    as: 'artists',
+                    attributes: [],
+                    required: true,
+                    where: { id },
+                },
+            ];
+
+        return this.$track.findAll(findOptions);
     }
 
-    getUserWithTracks(id: string, query: GetUserWithTracksQueryDto, as: 'tracksOwned' | 'tracksParticipated') {
-        return this.$user.findByPk(id, {
-            attributes: limitPublicUserFields(query.fields),
-            include: [{ model: Track, as, attributes: limitTrackFields(query.trackFields) }],
-        });
-    }
-
-    getUserWithProfile(id: string, query: GetUserWithProfileQueryDto) {
-        return this.$user.findByPk(id, {
-            attributes: limitPublicUserFields(query.fields),
-            include: [{
-                model: UserProfile,
-                attributes: limitFields(query.profileFields, { _enum: upf, defaults: [upf.biography] }),
-            }],
+    getProfile(id: string, query: GetOneQueryDto) {
+        return this.$userProfile.findByPk(id, {
+            attributes: limitFields(query.fields, { _enum: upf, defaults: [upf.biography] }),
         });
     }
 }
