@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import Track from '../../models/track/track.model';
 import { limitFields, paginate } from '../../helpers/utils/api-features';
 import { CreateTrackDto } from './dto/create-track.dto';
-import { CurrentUserService } from '@app/current-user';
+import { CurrentUser } from '@app/current-user';
 import * as mp3Duration from 'mp3-duration';
 import * as fs from 'fs';
 import { promisify } from 'util';
@@ -22,7 +22,7 @@ import moment = require('moment');
 export class TracksService {
     constructor(
         @InjectModel(Track) private $track: typeof Track,
-        private $currentUser: CurrentUserService,
+        private $currentUser: CurrentUser,
     ) {
 
     }

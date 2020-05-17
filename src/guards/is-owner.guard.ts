@@ -1,12 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
-import { CurrentUserService } from '@app/current-user';
+import { CurrentUser } from '@app/current-user';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { ModelCtor } from 'sequelize-typescript';
 
 @Injectable()
 export class IsOwnerGuard implements CanActivate {
-    constructor(private $currentUserService: CurrentUserService, private $reflector: Reflector) {
+    constructor(private $currentUserService: CurrentUser, private $reflector: Reflector) {
 
     }
 

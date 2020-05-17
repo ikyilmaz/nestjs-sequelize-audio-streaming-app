@@ -1,11 +1,11 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { CurrentUserService } from '@app/current-user';
+import { CurrentUser } from '@app/current-user';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class RestrictToGuard implements CanActivate {
-    constructor(private $currentUserService: CurrentUserService, private $reflector: Reflector) {
+    constructor(private $currentUserService: CurrentUser, private $reflector: Reflector) {
 
     }
 

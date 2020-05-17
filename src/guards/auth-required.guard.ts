@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { CurrentUserService } from '@app/current-user';
+import { CurrentUser } from '@app/current-user';
 import { InjectModel } from '@nestjs/sequelize';
 import User from '../models/user/user.model';
 import { catchAsync } from '../helpers/utils/catch-async';
@@ -9,7 +9,7 @@ import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthRequiredGuard implements CanActivate {
-    constructor(private $currentUserService: CurrentUserService, @InjectModel(User) private $user: typeof User) {
+    constructor(private $currentUserService: CurrentUser, @InjectModel(User) private $user: typeof User) {
     }
 
     async canActivate(context: ExecutionContext) {

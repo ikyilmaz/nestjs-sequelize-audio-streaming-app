@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import * as sharp from 'sharp';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import Album from '../../../models/album/album.model';
-import { CurrentUserService } from '@app/current-user';
+import { CurrentUser } from '@app/current-user';
 import { AddArtistsDto } from './dto/add-artists.dto';
 import { Sequelize } from 'sequelize-typescript';
 import User from '../../../models/user/user.model';
@@ -18,7 +18,7 @@ export class AlbumsRelatedService {
         @InjectModel(Album) private $album: typeof Album,
         @InjectModel(User) private $user: typeof User,
         @InjectConnection() private $sequelize: Sequelize,
-        private $currentUser: CurrentUserService,
+        private $currentUser: CurrentUser,
     ) {
 
     }

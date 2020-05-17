@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import Album from '../../models/album/album.model';
 import { paginate } from '../../helpers/utils/api-features';
 import { CreateAlbumDto } from './dto/create-album.dto';
-import { CurrentUserService } from '@app/current-user';
+import { CurrentUser } from '@app/current-user';
 import User from '../../models/user/user.model';
 import Track from '../../models/track/track.model';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -17,7 +17,7 @@ import { limitTrackFields } from '../../helpers/field-limiters/track.field-limit
 
 @Injectable()
 export class AlbumsService {
-    constructor(@InjectModel(Album) private $album: typeof Album, private $currentUser: CurrentUserService) {
+    constructor(@InjectModel(Album) private $album: typeof Album, private $currentUser: CurrentUser) {
 
     }
 

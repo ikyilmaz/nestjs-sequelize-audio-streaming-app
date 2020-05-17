@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CurrentUserService } from '@app/current-user';
+import { CurrentUser } from '@app/current-user';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import Track from '../../../models/track/track.model';
 import { AddArtistsDto } from '../../albums/albums-related/dto/add-artists.dto';
@@ -15,7 +15,7 @@ export class TracksRelatedService {
         @InjectModel(Track) private $track: typeof Track,
         @InjectModel(User) private $user: typeof User,
         @InjectConnection() private $sequelize: Sequelize,
-        private $currentUser: CurrentUserService,
+        private $currentUser: CurrentUser,
     ) {}
 
     addArtists(id: string, addArtistsDto: AddArtistsDto) {
