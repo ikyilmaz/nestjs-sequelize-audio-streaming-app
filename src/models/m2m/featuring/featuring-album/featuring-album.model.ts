@@ -1,4 +1,4 @@
-import { BaseModel } from '../base';
+import { BaseModel } from '../../../base';
 import { UUID } from 'sequelize';
 import {
     AllowNull,
@@ -7,11 +7,11 @@ import {
     ForeignKey,
     Table,
 } from 'sequelize-typescript';
-import User from '../user/user.model';
-import Album from '../album/album.model';
+import User from '../../../user/user.model';
+import Album from '../../../album/album.model';
 
-@Table({ timestamps: true, paranoid: true, tableName: 'users_albums' })
-export default class UserAlbum extends BaseModel<UserAlbum> {
+@Table({ timestamps: true, paranoid: true, tableName: 'featuring_albums' })
+export default class FeaturingAlbum extends BaseModel<FeaturingAlbum> {
     /*** @description User id */
     @ForeignKey(() => User)
     @AllowNull(false)

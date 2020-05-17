@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { CurrentUser } from '@app/current-user';
-import Friendship from '../../../models/user/friendship/friendship.model';
+import Friendship from '../../../models/m2m/friendship/friendship.model';
 import User from '../../../models/user/user.model';
 import { Sequelize } from 'sequelize-typescript';
 

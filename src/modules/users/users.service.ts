@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import User from '../../models/user/user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import UserProfile from '../../models/user/user-profile/user-profile.model';
+import UserProfile from '../../models/user-profile/user-profile.model';
 import { filterObject } from '../../helpers/utils/filter-object';
 import { paginate } from '../../helpers/utils/api-features';
 import { queryObject } from '../../helpers/utils/query-object';

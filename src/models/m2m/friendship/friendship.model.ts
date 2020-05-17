@@ -1,6 +1,6 @@
 import { BaseModel } from '../../base';
 import { AllowNull, BelongsTo, Column, ForeignKey, Table } from 'sequelize-typescript';
-import User from '../user.model';
+import User from '../../user/user.model';
 import { UUID } from 'sequelize';
 
 @Table({ timestamps: true, updatedAt: false })

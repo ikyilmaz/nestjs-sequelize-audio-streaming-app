@@ -8,7 +8,7 @@ import { AddArtistsDto } from './dto/add-artists.dto';
 import { Sequelize } from 'sequelize-typescript';
 import User from '../../../models/user/user.model';
 import { Op } from 'sequelize';
-import UserAlbum from '../../../models/m2m/useralbum.model';
+import FeaturingAlbum from '../../../models/m2m/featuring/featuring-album/featuring-album.model';
 import { RemoveArtistsDto } from './dto/remove-artists.dto';
 
 @Injectable()
@@ -46,7 +46,7 @@ export class AlbumsRelatedService {
             // ? If no artist found then throw error
             if (artists.length == 0) throw new NotFoundException('not found any user');
 
-            await album.$add('artists', artists, { transaction, through: UserAlbum });
+            await album.$add('artists', artists, { transaction, through: FeaturingAlbum });
         });
     }
 
@@ -67,7 +67,7 @@ export class AlbumsRelatedService {
             // ? If it is not exists then throw error
             if (!album) throw new NotFoundException('not found any album');
 
-            await album.$remove('artists', artistIds, { transaction, through: UserAlbum });
+            await album.$remove('artists', artistIds, { transaction, through: FeaturingAlbum });
         });
     }
 

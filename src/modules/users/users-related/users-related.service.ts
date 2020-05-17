@@ -4,9 +4,9 @@ import User from '../../../models/user/user.model';
 import Album from '../../../models/album/album.model';
 import Track from '../../../models/track/track.model';
 import { limitAlbumFields } from '../../../helpers/field-limiters/album.field-limiters';
-import { UserProfileFields as upf } from '../../../models/user/user-profile/user-profile.enums';
+import { UserProfileFields as upf } from '../../../models/user-profile/user-profile.enums';
 import { limitFields } from '../../../helpers/utils/api-features';
-import UserProfile from '../../../models/user/user-profile/user-profile.model';
+import UserProfile from '../../../models/user-profile/user-profile.model';
 import { FindOptions } from 'sequelize/types';
 import { GetOneQueryDto } from 'src/helpers/common-dtos/common-query.dto';
 

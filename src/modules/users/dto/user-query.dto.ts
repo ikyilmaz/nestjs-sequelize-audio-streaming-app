@@ -1,4 +1,4 @@
-import { GetManyQueryDto, GetOneQueryDto } from '../../../helpers/common-dtos/common-query.dto';
+import { GetManyQueryDto } from '../../../helpers/common-dtos/common-query.dto';
 import { IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import UserProfile from '../../models/user/user-profile/user-profile.model';
+import UserProfile from '../../models/user-profile/user-profile.model';
 import Track from '../../models/track/track.model';
 import Album from '../../models/album/album.model';
 import { CurrentUser } from '@app/current-user';
@@ -12,7 +12,7 @@ import {
     GetCurrentUsersTracksQueryDto,
 } from './dto/current-user-query.dto';
 import { UserFields as uf } from '../../models/user/user.enums';
-import { UserProfileFields as upf } from '../../models/user/user-profile/user-profile.enums';
+import { UserProfileFields as upf } from '../../models/user-profile/user-profile.enums';
 import { AlbumFields as af } from '../../models/album/album.enums';
 import { TrackFields as tf } from '../../models/track/track.enums';
 import { GetOneQueryDto } from '../../helpers/common-dtos/common-query.dto';
