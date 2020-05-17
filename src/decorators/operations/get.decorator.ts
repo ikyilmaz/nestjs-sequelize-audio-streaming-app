@@ -1,7 +1,9 @@
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiParamOptions } from '@nestjs/swagger';
 import { applyDecorators, Get } from '@nestjs/common';
 
-export const GetOperation = (path?: string | string[], params?: ApiParamOptions[]) => {
+export const GetOperation = (options?: { path?: string | string[], params?: ApiParamOptions[] | false }) => {
+    const path = options?.path;
+    const params = options?.params;
 
     const decorators: MethodDecorator[] = [
         ApiOkResponse({ description: 'Found.' }),
@@ -10,8 +12,10 @@ export const GetOperation = (path?: string | string[], params?: ApiParamOptions[
         Get(path ? path : '/:id'),
     ];
 
-    if (params?.length > 0) decorators.push(...params.map(param => ApiParam(param)));
-    else decorators.push(ApiParam({ name: 'id', type: 'UUID' }));
+    if (!(params === false)) {
+        if (params?.length > 0) decorators.push(...params.map(param => ApiParam(param)));
+        else decorators.push(ApiParam({ name: 'id', type: 'UUID' }));
+    }
 
     return applyDecorators(...decorators);
 };

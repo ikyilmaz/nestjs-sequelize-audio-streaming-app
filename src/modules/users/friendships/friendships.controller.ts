@@ -6,6 +6,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ParamIdDto } from '../../../helpers/common-dtos/param-id.dto';
 import { SendResponse } from '../../../helpers/utils/send-response';
 import { catchAsync } from '../../../helpers/utils/catch-async';
+import { DeleteOperation } from '../../../decorators/operations/delete.decorator';
 
 @Controller('users')
 @ApiTags('users')
@@ -20,7 +21,7 @@ export class FriendshipsController {
     }
 
 
-    @ApiOperation({ description: 'REMOVE FROM FRIENDS' }) @Auth() @CreateOperation('/:id/remove-friend')
+    @ApiOperation({ description: 'REMOVE FROM FRIENDS' }) @Auth() @DeleteOperation('/:id/remove-friend')
     async delete(@Param() params: ParamIdDto) {
         await catchAsync(this.$friendshipsService.unFollow(params.id));
     }

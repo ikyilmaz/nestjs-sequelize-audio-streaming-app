@@ -57,7 +57,11 @@ export class TracksRelatedController {
      *  --> STREAM TRACK
      *  @description Returns track
      *  @statusCodes 200, 404, 400 */
-    @ApiOperation({ summary: 'STREAM TRACK' }) @GetOperation('/:key/stream', [{ name: 'key', type: String }])
+
+    @ApiOperation({ summary: 'STREAM TRACK' }) @GetOperation({
+        path: '/:key/stream',
+        params: [{ name: 'key', type: String }],
+    })
     async stream(@Req() req: Request, @Res() res: Response, @Param('key') key: string) {
 
         const music = `${__dirname}/../public/assets/audio/tracks/${key}.mp3`;

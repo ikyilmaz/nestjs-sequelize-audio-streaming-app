@@ -25,7 +25,7 @@ export class UsersRelatedController {
      * --> GET USER WITH ALBUMS BELONGS TO HIM
      * @description Returns user with albums belongs to him
      * @statusCodes 200, 400, 404 */
-    @ApiOperation({ summary: 'GET USER WITH ALBUMS BELONGS TO HIM' }) @GetOperation('/:id/albums-owned')
+    @ApiOperation({ summary: 'GET USER WITH ALBUMS BELONGS TO HIM' }) @GetOperation({ path: '/:id/albums-owned' })
     async getUserWithAlbumsOwned(@Param() params: ParamIdDto, @Query() query: GetUserWithAlbumsQueryDto) {
         return SendResponse(await catchAsync(this.$usersRelatedService.getUserWithAlbums(params.id, query, 'albumsOwned')));
     }
@@ -34,7 +34,7 @@ export class UsersRelatedController {
      * --> GET USER WITH ALBUMS FEATURING HIM
      * @description Returns user with albums featuring him
      * @statusCodes 200, 400, 404 */
-    @ApiOperation({ summary: 'GET USER WITH ALBUMS FEATURING HIM' }) @GetOperation('/:id/albums-participated')
+    @ApiOperation({ summary: 'GET USER WITH ALBUMS FEATURING HIM' }) @GetOperation({ path: '/:id/albums-participated' })
     async getUserWithAlbumsParticipated(@Param() params: ParamIdDto, @Query() query: GetUserWithAlbumsQueryDto) {
         return SendResponse(await catchAsync(this.$usersRelatedService.getUserWithAlbums(params.id, query, 'albumsParticipated')));
     }
@@ -43,7 +43,7 @@ export class UsersRelatedController {
      * --> GET USER WITH TRACKS BELONGS TO HIM
      * @description Returns user with tracks belongs to him
      * @statusCodes 200, 400, 404 */
-    @ApiOperation({ summary: 'GET USER WITH TRACKS BELONGS TO HIM' }) @GetOperation('/:id/tracks-owned')
+    @ApiOperation({ summary: 'GET USER WITH TRACKS BELONGS TO HIM' }) @GetOperation({ path: '/:id/tracks-owned' })
     async getUserWithTracksOwned(@Param() params: ParamIdDto, @Query() query: GetUserWithTracksQueryDto) {
         return SendResponse(await catchAsync(this.$usersRelatedService.getUserWithTracks(params.id, query, 'tracksOwned')));
     }
@@ -52,7 +52,7 @@ export class UsersRelatedController {
      * --> GET USER WITH TRACKS FEATURING HIM
      * @description Returns user with tracks featuring him
      * @statusCodes 200, 400, 404 */
-    @ApiOperation({ summary: 'GET USER WITH TRACKS FEATURING HIM' }) @GetOperation('/:id/tracks-participated')
+    @ApiOperation({ summary: 'GET USER WITH TRACKS FEATURING HIM' }) @GetOperation({ path: '/:id/tracks-participated' })
     async getUserWithTracksParticipated(@Param() params: ParamIdDto, @Query() query: GetUserWithTracksQueryDto) {
         return SendResponse(await catchAsync(this.$usersRelatedService.getUserWithTracks(params.id, query, 'tracksParticipated')));
     }
@@ -61,7 +61,7 @@ export class UsersRelatedController {
      * --> GET USER WITH PROFILE
      * @description Returns user with profile
      * @statusCodes 200, 400, 404 */
-    @ApiOperation({ summary: 'GET USER WITH PROFILE' }) @GetOperation('/:id/profile')
+    @ApiOperation({ summary: 'GET USER WITH PROFILE' }) @GetOperation({ path: '/:id/profile' })
     async getUserWithProfile(@Param() params: ParamIdDto, @Query() query: GetUserWithProfileQueryDto) {
         return SendResponse(await catchAsync(this.$usersRelatedService.getUserWithProfile(params.id, query)));
     }
