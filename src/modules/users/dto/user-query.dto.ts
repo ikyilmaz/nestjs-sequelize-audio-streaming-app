@@ -28,3 +28,9 @@ export class GetUserWithTracksQueryDto extends GetOneQueryDto {
     @IsOptional()
     trackFields: string;
 }
+
+export class GetUserWithProfileQueryDto extends GetOneQueryDto{
+    @ApiProperty({ required: false })
+    @IsOptional()
+    profileFields: string;
+}

@@ -6,4 +6,4 @@ import { CurrentUser } from './current-user.service';
     providers: [CurrentUser],
     exports: [CurrentUser],
 })
-export class CurrentUserModule {}
+export class CurrentUserRequestModule {}

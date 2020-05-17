@@ -2,12 +2,13 @@ import { Controller, Param } from '@nestjs/common';
 import { FriendshipsService } from './friendships.service';
 import { CreateOperation } from '../../../decorators/operations/create.decorator';
 import { Auth } from '../../../decorators/auth.decorator';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ParamIdDto } from '../../../helpers/common-dtos/param-id.dto';
 import { SendResponse } from '../../../helpers/utils/send-response';
 import { catchAsync } from '../../../helpers/utils/catch-async';
 
 @Controller('users')
+@ApiTags('users')
 export class FriendshipsController {
     constructor(private $friendshipsService: FriendshipsService) {
 
