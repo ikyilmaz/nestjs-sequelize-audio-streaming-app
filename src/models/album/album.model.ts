@@ -12,9 +12,11 @@ import {
     Table,
 } from 'sequelize-typescript';
 import User from '../user/user.model';
-import FeaturingAlbum from '../m2m/featuring/featuring-album/featuring-album.model';
+import AlbumFeaturing from '../m2m/featuring/album-featuring/album-featuring.model';
 import { albumScopes, defaultAlbumScope } from './album.scopes';
 import Track from '../track/track.model';
+import AlbumLike from '../m2m/like/album-like/album-like.model';
+import AlbumComment from '../comment/album-comment/album-comment.model';
 
 @Table({
     timestamps: true,
@@ -39,9 +41,9 @@ export default class Album extends BaseModel<Album> {
     @Column(DataType.STRING)
     photo!: string;
 
-    // ASSOCIATIONS
+    // --> ASSOCIATIONS
 
-    // OWNER
+    // --> OWNER
 
     /*** @description User's id which one is owner of this track */
     @ForeignKey(() => User)
@@ -53,16 +55,31 @@ export default class Album extends BaseModel<Album> {
     @BelongsTo(() => User)
     owner!: User;
 
-    // ARTISTS
+    // --> ARTISTS
 
     /*** @description Artists on the track */
     @BelongsToMany(() => User, {
-        through: { model: () => FeaturingAlbum, unique: false },
+        through: { model: () => AlbumFeaturing, unique: false },
     })
     artists!: User[];
 
-    // TRACKS
+    // --> TRACKS
     /*** @description Tracks in the album */
     @HasMany(() => Track)
     tracks!: Track[];
+
+    // --> COMMENTS
+    /** @description comments */
+    @HasMany(() => AlbumComment)
+    comments: AlbumComment[];
+
+    // --> ALBUM LIKES
+    /** @description Users who liked the current album */
+    @BelongsToMany(() => User, {
+        through: {
+            model: () => AlbumLike,
+            unique: false,
+        },
+    })
+    usersLiked: User[];
 }
