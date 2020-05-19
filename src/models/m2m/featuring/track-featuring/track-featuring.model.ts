@@ -4,8 +4,8 @@ import User from '../../../user/user.model';
 import { UUID } from 'sequelize';
 import Track from '../../../track/track.model';
 
-@Table({ timestamps: true, paranoid: true, tableName: 'featuring_tracks' })
-export default class FeaturingTrack extends BaseModel<FeaturingTrack> {
+@Table({ timestamps: true, paranoid: true, tableName: 'TrackFeaturing' })
+export default class TrackFeaturing extends BaseModel<TrackFeaturing> {
     /**@description User id */
     @ForeignKey(() => User)
     @AllowNull(false)
