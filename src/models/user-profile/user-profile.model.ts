@@ -1,8 +1,8 @@
-import { Table, Model, Column, ForeignKey, BelongsTo, DataType, Length } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Length, Model, Table } from 'sequelize-typescript';
 import User from '../user/user.model';
 import Mood from '../mood/mood.model';
 
-@Table({ timestamps: true, paranoid: true, tableName: 'user_profile' })
+@Table({ timestamps: true, paranoid: true, tableName: 'UserProfiles' })
 export default class UserProfile extends Model<UserProfile> {
     /** @description User id which one is owner of this profile also primary key */
     @ForeignKey(() => User)
