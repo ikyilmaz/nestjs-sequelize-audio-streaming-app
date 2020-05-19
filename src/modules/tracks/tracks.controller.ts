@@ -1,12 +1,4 @@
-import {
-    BadRequestException,
-    Body,
-    Controller,
-    Param,
-    Query,
-    UploadedFile,
-    UseInterceptors,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Param, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TracksService } from './tracks.service';
 import { SendResponse } from '../../helpers/utils/send-response';
@@ -25,12 +17,41 @@ import { Auth } from '../../decorators/auth.decorator';
 import { CreateOperation } from '../../decorators/operations/create.decorator';
 import { UpdateOperation } from '../../decorators/operations/update.decorator';
 import { DeleteOperation } from '../../decorators/operations/delete.decorator';
+import { RedisService } from 'nestjs-redis';
+import { Redis } from 'ioredis';
+import * as bluebird from 'bluebird';
+import { GETTER_01, SETTER_01 } from '../../redis/redis.constants';
 
 @Controller('tracks')
 @ApiTags('tracks')
 export class TracksController {
-    constructor(private $tracksService: TracksService) {
+    redisMaster: Redis;
+    redisSlave: Redis;
 
+    constructor(
+        private readonly $tracksService: TracksService,
+        private readonly $redisService: RedisService,
+    ) {
+        this.redisMaster = bluebird.promisifyAll(this.$redisService.getClient(SETTER_01));
+        this.redisSlave = bluebird.promisifyAll(this.$redisService.getClient(GETTER_01));
+    }
+
+    /**
+     * --> GET MOST LISTENING TRACKS
+     * @description get most listening tracks
+     * @statusCodes 200, 400*/
+    @ApiOperation({ summary: 'GET MOST LISTENING TRACKS' }) @GetManyOperation('/most-listening')
+    async getMostListeningTracks() {
+
+        const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_listening_tracks');
+
+        if (cachedSource) return SendResponse(cachedSource);
+
+        const tracks = await this.$tracksService.getMostListening();
+
+        await (this.redisMaster as any).setexAsync('tracks:most_listening_tracks', 250, JSON.stringify(tracks));
+
+        return SendResponse(tracks);
     }
 
     /**

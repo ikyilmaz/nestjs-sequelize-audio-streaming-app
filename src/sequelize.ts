@@ -17,7 +17,7 @@ import Mood from './models/mood/mood.model';
 export class SequelizeConfigService implements SequelizeOptionsFactory {
     createSequelizeOptions(): SequelizeModuleOptions {
         return {
-            dialect: process.env.DB_DIALECT as 'mysql',
+            dialect: process.env.DB_DIALECT as 'postgres',
             username: process.env.DB_USER,
             database: process.env.DB_NAME,
             sync: { force: true },

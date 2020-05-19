@@ -10,19 +10,24 @@ import { TracksModule } from './modules/tracks/tracks.module';
 import { SequelizeConfigService } from './sequelize';
 import { SyncController } from './helpers/sync/sync.controller';
 import { CurrentUserModule } from './modules/current-user/current-user.module';
+import { RedisModule } from 'nestjs-redis';
+import { redisModuleOptions } from './redis/redis.config';
 
 @Module({
     imports: [
         ConfigModule.forRoot(),
         SequelizeModule.forRootAsync({ useClass: SequelizeConfigService }),
+        RedisModule.register(redisModuleOptions),
         UsersModule,
         AlbumsModule,
         AuthModule,
         CurrentUserRequestModule,
         CurrentUserModule,
         TokenModule,
-        TracksModule
+        TracksModule,
     ],
-    controllers: [SyncController]
+    controllers: [SyncController],
 })
-export class AppModule {}
+export class AppModule {
+}
+

@@ -15,11 +15,15 @@ import { CreateOperation } from '../../decorators/operations/create.decorator';
 import { UpdateOperation } from '../../decorators/operations/update.decorator';
 import { DeleteOperation } from '../../decorators/operations/delete.decorator';
 import { GetManyOperation } from '../../decorators/operations/get-many.decorator';
+import { RedisService } from 'nestjs-redis';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-    constructor(public $usersService: UsersService) {
+    constructor(
+        public readonly $usersService: UsersService,
+        public readonly $redisService: RedisService,
+    ) {
 
     }
 

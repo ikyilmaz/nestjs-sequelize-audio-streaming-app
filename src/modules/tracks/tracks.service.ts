@@ -27,6 +27,15 @@ export class TracksService {
 
     }
 
+    getMostListening() {
+        return this.$track.findAll({
+            limit: 25,
+            where: {
+                // configuration
+            },
+        });
+    }
+
     getMany(query: GetManyTrackQueryDto) {
         return this.$track.findAll({
             ...paginate(query),
@@ -48,7 +57,7 @@ export class TracksService {
             title: createTrackDto.title,
             albumId: createTrackDto.albumId,
             ownerId: this.$currentUser.getUser.id,
-            duration,
+            duration: parseInt(duration),
             track: file.filename,
         });
     }
