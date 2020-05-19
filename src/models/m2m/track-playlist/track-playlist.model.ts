@@ -4,8 +4,8 @@ import Track from '../../track/track.model';
 import User from '../../user/user.model';
 import Playlist from '../../playlist/playlist.model';
 
-@Table({ timestamps: true, updatedAt: false, tableName: 'tracks_in_the_playlist' })
-export default class TrackInThePlaylist extends BaseModel<TrackInThePlaylist> {
+@Table({ timestamps: true, updatedAt: false, tableName: 'TracksPlaylists' })
+export default class TrackPlaylist extends BaseModel<TrackPlaylist> {
     // --> ASSOCIATIONS
 
     // --> PLAYLIST
