@@ -3,8 +3,9 @@ import { NotFoundException } from '@nestjs/common';
 /**
  * @description short hand for sending response
  * */
-export const SendResponse = (data: any) => {
-    if (!data || (Array.isArray(data) && data.length == 0)) throw new NotFoundException();
-    if (typeof data == 'string') data = JSON.parse(data);
-    return { status: 'success', data };
+export const SendResponse = async (data: Promise<any> | any) => {
+    let response = await data;
+    if (!response || (Array.isArray(response) && response.length == 0)) throw new NotFoundException();
+    if (typeof response == 'string') response = JSON.parse(response);
+    return { status: 'success', data: response };
 };
