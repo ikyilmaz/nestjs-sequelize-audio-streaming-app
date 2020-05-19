@@ -3,7 +3,7 @@ import { AllowNull, BelongsTo, Column, DataType, ForeignKey, Length, Table } fro
 import Track from '../../track/track.model';
 import User from '../../user/user.model';
 
-@Table({ timestamps: true, paranoid: true, tableName: "track_comments" })
+@Table({ timestamps: true, paranoid: true, tableName: 'TrackComments' })
 export default class TrackComment extends BaseModel<TrackComment> {
     /**@description content of the comment*/
     @Length({ min: 1, max: 255, msg: 'field \'content\' must be between 1 and 255 characters' })

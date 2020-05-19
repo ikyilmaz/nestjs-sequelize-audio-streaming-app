@@ -3,7 +3,7 @@ import { AllowNull, BelongsTo, Column, DataType, ForeignKey, Length, Table } fro
 import User from '../../user/user.model';
 import Album from '../../album/album.model';
 
-@Table({timestamps: true, paranoid: true, tableName: "album_comments"})
+@Table({ timestamps: true, paranoid: true, tableName: 'AlbumComments' })
 export default class AlbumComment extends BaseModel<AlbumComment>{
     /**@description content of the comment*/
     @Length({ min: 1, max: 255, msg: 'field \'content\' must be between 1 and 255 characters' })
