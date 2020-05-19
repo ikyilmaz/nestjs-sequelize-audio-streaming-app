@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CurrentUser } from '@app/current-user';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import Track from '../../../models/track/track.model';
@@ -8,6 +8,7 @@ import { Sequelize } from 'sequelize-typescript';
 import User from '../../../models/user/user.model';
 import TrackFeaturing from '../../../models/m2m/featuring/track-featuring/track-featuring.model';
 import { RemoveArtistsDto } from '../../albums/albums-related/dto/remove-artists.dto';
+import TrackLike from '../../../models/m2m/like/track-like/track-like.model';
 
 @Injectable()
 export class TracksRelatedService {
@@ -17,6 +18,7 @@ export class TracksRelatedService {
         @InjectConnection() private $sequelize: Sequelize,
         private $currentUser: CurrentUser,
     ) {
+
     }
 
     addArtists(id: string, addArtistsDto: AddArtistsDto) {
@@ -42,7 +44,7 @@ export class TracksRelatedService {
             // ? If no artist found then throw error
             if (artists.length == 0) throw new NotFoundException('not found any user');
 
-            await track.$add('artists', artists, { transaction, through: TrackFeaturing });
+            return track.$add('artists', artists, { transaction, through: TrackFeaturing });
         });
 
     }
@@ -65,6 +67,30 @@ export class TracksRelatedService {
             if (!track) throw new NotFoundException('not found any album');
 
             await track.$remove('artists', artistIds, { transaction, through: TrackFeaturing });
+        });
+    }
+
+    addLike(id: string) {
+        return this.$sequelize.transaction(async transaction => {
+            const track = await this.$track.findByPk(id, { transaction });
+
+            if (!track) throw new NotFoundException();
+
+            const like = await track.$add('usersLiked', this.$currentUser.getUser, { transaction, through: TrackLike });
+
+            if (!like) throw new BadRequestException('already exists');
+
+            return like;
+        });
+    }
+
+    removeLike(id: string) {
+        return this.$sequelize.transaction(async transaction => {
+            const track = await this.$track.findByPk(id, { transaction });
+
+            if (!track) throw new NotFoundException();
+
+            return track.$remove('usersLiked', this.$currentUser.getUser, { transaction, through: TrackLike });
         });
     }
 

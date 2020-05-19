@@ -13,6 +13,7 @@ import { Auth } from '../../../decorators/auth.decorator';
 import { CreateOperation } from '../../../decorators/operations/create.decorator';
 import { DeleteOperation } from '../../../decorators/operations/delete.decorator';
 import { GetOperation } from '../../../decorators/operations/get.decorator';
+import { SendResponse } from '../../../helpers/utils/send-response';
 
 @Controller('tracks')
 @ApiTags('tracks')
@@ -27,9 +28,9 @@ export class TracksRelatedController {
      * @description Adds artists to specified track
      * @permissions authenticated users, owners
      * @statusCodes 201, 400, 404 */
-    @ApiOperation({ summary: 'ADD MANY ARTIST TO TRACK' }) @Auth({ isOwner: Track }) @CreateOperation('/:id/add-artists')
-    async addManyArtistToAlbum(@Param() params: ParamIdDto, @Body() addArtistsDto: AddArtistsDto) {
-        await catchAsync(this.$tracksRelatedService.addArtists(params.id, addArtistsDto));
+    @ApiOperation({ summary: 'ADD MANY ARTIST' }) @Auth({ isOwner: Track }) @CreateOperation('/:id/add-artists')
+    async addManyArtist(@Param() params: ParamIdDto, @Body() addArtistsDto: AddArtistsDto) {
+        return SendResponse(await catchAsync(this.$tracksRelatedService.addArtists(params.id, addArtistsDto)));
     }
 
     /**
@@ -37,9 +38,29 @@ export class TracksRelatedController {
      * @description Removes artists from specified track
      * @permissions authenticated users, owners
      * @statusCodes 204, 400, 404 */
-    @ApiOperation({ summary: 'REMOVE MANY ARTIST FROM TRACK' }) @Auth({ isOwner: Track }) @DeleteOperation('/:id/remove-artists')
-    async removeManyArtistFromAlbum(@Param() params: ParamIdDto, @Body() removeArtistsDto: RemoveArtistsDto) {
+    @ApiOperation({ summary: 'REMOVE MANY ARTIST' }) @Auth({ isOwner: Track }) @DeleteOperation('/:id/remove-artists')
+    async removeManyArtist(@Param() params: ParamIdDto, @Body() removeArtistsDto: RemoveArtistsDto) {
         await catchAsync(this.$tracksRelatedService.removeArtists(params.id, removeArtistsDto));
+    }
+
+    /**
+     * --> ADD LIKE
+     * @description adds a like to the specified track
+     * @permissions authenticated users
+     * @statusCodes 204, 400, 404 */
+    @ApiOperation({ summary: 'ADD LIKE' }) @Auth() @CreateOperation('/:id/add-like')
+    async addLike(@Param() params: ParamIdDto) {
+        return SendResponse(await catchAsync(this.$tracksRelatedService.addLike(params.id)));
+    }
+
+    /**
+     * --> REMOVE LIKE
+     * @description removes a like to the specified track
+     * @permissions authenticated users
+     * @statusCodes 204, 400, 404 */
+    @ApiOperation({ summary: 'REMOVE LIKE' }) @Auth() @DeleteOperation('/:id/remove-like')
+    async removeLike(@Param() params: ParamIdDto) {
+        await catchAsync(this.$tracksRelatedService.removeLike(params.id));
     }
 
     /**

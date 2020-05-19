@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { InjectConnection, SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './modules/users/users.module';
 import { AlbumsModule } from './modules/albums/albums.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -12,6 +12,7 @@ import { SyncController } from './helpers/sync/sync.controller';
 import { CurrentUserModule } from './modules/current-user/current-user.module';
 import { RedisModule } from 'nestjs-redis';
 import { redisModuleOptions } from './redis/redis.config';
+import { Sequelize } from 'sequelize-typescript';
 
 @Module({
     imports: [
@@ -28,6 +29,12 @@ import { redisModuleOptions } from './redis/redis.config';
     ],
     controllers: [SyncController],
 })
-export class AppModule {
+export class AppModule implements OnModuleInit {
+    constructor(@InjectConnection() private readonly $sequelize: Sequelize) {
+    }
+
+    async onModuleInit() {
+        await this.$sequelize.sync();
+    }
 }
 

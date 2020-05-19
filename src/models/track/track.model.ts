@@ -91,5 +91,4 @@ export default class Track extends BaseModel<Track> {
         },
     })
     usersLiked: User[];
-
 }

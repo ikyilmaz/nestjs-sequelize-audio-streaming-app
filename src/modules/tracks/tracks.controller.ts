@@ -8,7 +8,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { GetManyTrackQueryDto, GetOneTrackQueryDto } from './dto/track-query.dto';
-import { filterObject } from '../../helpers/utils/filter-object';
 import Track from '../../models/track/track.model';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { GetOperation } from '../../decorators/operations/get.decorator';
@@ -17,41 +16,30 @@ import { Auth } from '../../decorators/auth.decorator';
 import { CreateOperation } from '../../decorators/operations/create.decorator';
 import { UpdateOperation } from '../../decorators/operations/update.decorator';
 import { DeleteOperation } from '../../decorators/operations/delete.decorator';
-import { RedisService } from 'nestjs-redis';
-import { Redis } from 'ioredis';
-import * as bluebird from 'bluebird';
-import { GETTER_01, SETTER_01 } from '../../redis/redis.constants';
 
 @Controller('tracks')
 @ApiTags('tracks')
 export class TracksController {
-    redisMaster: Redis;
-    redisSlave: Redis;
+    constructor(private readonly $tracksService: TracksService) {
 
-    constructor(
-        private readonly $tracksService: TracksService,
-        private readonly $redisService: RedisService,
-    ) {
-        this.redisMaster = bluebird.promisifyAll(this.$redisService.getClient(SETTER_01));
-        this.redisSlave = bluebird.promisifyAll(this.$redisService.getClient(GETTER_01));
     }
 
     /**
-     * --> GET MOST LISTENING TRACKS
-     * @description get most listening tracks
+     * --> GET MOST LISTENED TRACKS
+     * @description get most listened tracks
      * @statusCodes 200, 400*/
-    @ApiOperation({ summary: 'GET MOST LISTENING TRACKS' }) @GetManyOperation('/most-listening')
-    async getMostListeningTracks() {
+    @ApiOperation({ summary: 'GET MOST LISTENED TRACKS' }) @GetManyOperation('/most-listened')
+    async getMostListenedTracks() {
+        return SendResponse(await this.$tracksService.getMostListened());
+    }
 
-        const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_listening_tracks');
-
-        if (cachedSource) return SendResponse(cachedSource);
-
-        const tracks = await this.$tracksService.getMostListening();
-
-        await (this.redisMaster as any).setexAsync('tracks:most_listening_tracks', 250, JSON.stringify(tracks));
-
-        return SendResponse(tracks);
+    /**
+     * --> GET MOST LIKED TRACKS
+     * @description get most likes tracks
+     * @statusCodes 200, 400*/
+    @ApiOperation({ summary: 'GET MOST LIKED TRACKS' }) @GetManyOperation('/most-liked')
+    async getMostLikedTracks() {
+        return SendResponse(await this.$tracksService.getMostLiked());
     }
 
     /**
@@ -101,7 +89,7 @@ export class TracksController {
      *  @statusCodes 200, 403, 400, 404 */
     @ApiOperation({ summary: 'UPDATE TRACK' }) @Auth({ isOwner: Track }) @UpdateOperation()
     async update(@Param() params: ParamIdDto, @Body() updateTrackDto: UpdateTrackDto, @UploadedFile() file) {
-        await catchAsync(this.$tracksService.update(params.id, filterObject(updateTrackDto, ['albumId'])));
+        await catchAsync(this.$tracksService.update(params.id, updateTrackDto));
     }
 
     /**

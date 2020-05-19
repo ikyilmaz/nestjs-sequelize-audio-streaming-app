@@ -16,24 +16,61 @@ import { TrackFields } from '../../models/track/track.enums';
 import { limitPublicUserFields } from '../../helpers/field-limiters/user.field-limiters';
 import { limitAlbumFields } from '../../helpers/field-limiters/album.field-limiters';
 import { limitTrackFields } from '../../helpers/field-limiters/track.field-limiter';
+import { RedisService } from 'nestjs-redis';
+import * as bluebird from 'bluebird';
+import { GETTER_01, SETTER_01 } from '../../redis/redis.constants';
+import { Redis } from 'ioredis';
 import moment = require('moment');
 
 @Injectable()
 export class TracksService {
+    redisMaster: Redis;
+    redisSlave: Redis;
+
     constructor(
         @InjectModel(Track) private $track: typeof Track,
         private $currentUser: CurrentUser,
+        private readonly $redisService: RedisService,
     ) {
-
+        this.redisMaster = bluebird.promisifyAll(this.$redisService.getClient(SETTER_01));
+        this.redisSlave = bluebird.promisifyAll(this.$redisService.getClient(GETTER_01));
     }
 
-    getMostListening() {
-        return this.$track.findAll({
+    async getMostListened() {
+        const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_listening_tracks');
+
+        if (cachedSource) return cachedSource;
+
+        const tracks = await this.$track.findAll({ limit: 25, order: [['listenCount', 'DESC']] });
+
+        await (this.redisMaster as any).setexAsync('tracks:most_listening_tracks', 250, JSON.stringify(tracks));
+
+        return tracks;
+    }
+
+    async getMostLiked() {
+        // const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_liked');
+
+        // if (cachedSource) return cachedSource;
+
+        const tracks = await this.$track.findAndCountAll({
             limit: 25,
-            where: {
-                // configuration
-            },
+            include: [
+                {
+                    model: User,
+                    as: 'usersLiked',
+                    attributes: [],
+                    through: { attributes: [] },
+                },
+            ],
+            group: 'Track.id',
         });
+
+        // await (this.redisMaster as any).setexAsync('tracks:most_listening_tracks', 250, JSON.stringify(tracks));
+
+        console.log('');
+
+        return tracks;
     }
 
     getMany(query: GetManyTrackQueryDto) {
@@ -86,7 +123,7 @@ export class TracksService {
     }
 
     update(id: string, updateTrackDto: UpdateTrackDto) {
-        return this.$track.update({ title: updateTrackDto.title }, { where: { id } });
+        return this.$track.update({ title: updateTrackDto.title }, { where: { id }, returning: false });
     }
 
     delete(id: string) {
