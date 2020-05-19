@@ -14,20 +14,22 @@ import {
     Table,
     Unique,
 } from 'sequelize-typescript';
-import { STRING, SaveOptions, UpdateOptions } from 'sequelize';
+import { SaveOptions, STRING, UpdateOptions } from 'sequelize';
 import { BaseModel } from '../base';
 import { hash } from 'bcryptjs';
 import Album from '../album/album.model';
-import FeaturingAlbum from '../m2m/featuring/featuring-album/featuring-album.model';
+import AlbumFeaturing from '../m2m/featuring/album-featuring/album-featuring.model';
 import Track from '../track/track.model';
-import FeaturingTrack from '../m2m/featuring/featuring-track/featuring-track.model';
+import TrackFeaturing from '../m2m/featuring/track-featuring/track-featuring.model';
 import Friendship from '../m2m/friendship/friendship.model';
 import { userScopes } from './user.scopes';
 import UserProfile from '../user-profile/user-profile.model';
 import TrackComment from '../comment/track-comment/track-comment.model';
 import AlbumComment from '../comment/album-comment/album-comment.model';
 import Playlist from '../playlist/playlist.model';
-import TrackInThePlaylist from '../m2m/track-in-the-playlist/track-in-the-playlist.model';
+import TrackPlaylist from '../m2m/track-playlist/track-playlist.model';
+import AlbumLike from '../m2m/like/album-like/album-like.model';
+import TrackLike from '../m2m/like/track-like/track-like.model';
 
 @Table({
     timestamps: true,
@@ -109,7 +111,7 @@ export default class User extends BaseModel<User> {
 
     /** @description Albums which ones are participated by user */
     @BelongsToMany(() => Album, {
-        through: { model: () => FeaturingAlbum, unique: false },
+        through: { model: () => AlbumFeaturing, unique: false },
     })
     albumsParticipated!: Album[];
 
@@ -121,7 +123,7 @@ export default class User extends BaseModel<User> {
 
     /** @description Tracks participated by user */
     @BelongsToMany(() => Track, {
-        through: { model: () => FeaturingTrack, unique: false },
+        through: { model: () => TrackFeaturing, unique: false },
     })
     tracksParticipated!: Track[];
 
@@ -164,8 +166,30 @@ export default class User extends BaseModel<User> {
     // -->  OWNER OF THE TRACKS IN PLAYLISTS
 
     /** @description mind fuck */
-    @HasMany(() => TrackInThePlaylist)
-    tracksInPlaylists: TrackInThePlaylist[];
+    @HasMany(() => TrackPlaylist)
+    tracksInPlaylists: TrackPlaylist[];
+
+    // --> TRACK LIKES
+
+    /** @description liked tracks*/
+    @BelongsToMany(() => Track, {
+        through: {
+            model: () => TrackLike,
+            unique: false,
+        },
+    })
+    likedTracks: Track[];
+
+    // --> ALBUM LIKES
+
+    /** @description liked albums */
+    @BelongsToMany(() => Album, {
+        through: {
+            model: () => AlbumLike,
+            unique: false,
+        },
+    })
+    likedAlbums: Album[];
 
     // --> HOOKS
 
