@@ -1,19 +1,8 @@
-import {
-    Body,
-    Controller,
-    InternalServerErrorException,
-    NotFoundException,
-    Param,
-    Req,
-    Res,
-} from '@nestjs/common';
-import {
-    ApiOperation,
-    ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, InternalServerErrorException, NotFoundException, Param, Req, Res } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { ReadStream, Stats } from 'fs';
 import * as fs from 'fs';
+import { ReadStream, Stats } from 'fs';
 import { TracksRelatedService } from './tracks-related.service';
 import { ParamIdDto } from '../../../helpers/common-dtos/param-id.dto';
 import { AddArtistsDto } from '../../albums/albums-related/dto/add-artists.dto';
@@ -106,6 +95,8 @@ export class TracksRelatedController {
             });
             readStream = fs.createReadStream(music);
         }
+
+        await this.$tracksRelatedService.incrementListenCount(key);
 
         readStream.pipe(res);
     }

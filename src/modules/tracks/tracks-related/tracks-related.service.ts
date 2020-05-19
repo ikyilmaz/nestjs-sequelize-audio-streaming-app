@@ -6,7 +6,7 @@ import { AddArtistsDto } from '../../albums/albums-related/dto/add-artists.dto';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import User from '../../../models/user/user.model';
-import FeaturingTrack from '../../../models/m2m/featuring/featuring-track/featuring-track.model';
+import TrackFeaturing from '../../../models/m2m/featuring/track-featuring/track-featuring.model';
 import { RemoveArtistsDto } from '../../albums/albums-related/dto/remove-artists.dto';
 
 @Injectable()
@@ -16,7 +16,8 @@ export class TracksRelatedService {
         @InjectModel(User) private $user: typeof User,
         @InjectConnection() private $sequelize: Sequelize,
         private $currentUser: CurrentUser,
-    ) {}
+    ) {
+    }
 
     addArtists(id: string, addArtistsDto: AddArtistsDto) {
         const artistIds = addArtistsDto.artists
@@ -41,7 +42,7 @@ export class TracksRelatedService {
             // ? If no artist found then throw error
             if (artists.length == 0) throw new NotFoundException('not found any user');
 
-            await track.$add('artists', artists, { transaction, through: FeaturingTrack });
+            await track.$add('artists', artists, { transaction, through: TrackFeaturing });
         });
 
     }
@@ -63,8 +64,12 @@ export class TracksRelatedService {
             // ? If it is not exists then throw error
             if (!track) throw new NotFoundException('not found any album');
 
-            await track.$remove('artists', artistIds, { transaction, through: FeaturingTrack });
+            await track.$remove('artists', artistIds, { transaction, through: TrackFeaturing });
         });
+    }
+
+    incrementListenCount(filename: string) {
+        return this.$track.increment('listenCount', { by: 1, where: { track: filename } });
     }
 
 }
