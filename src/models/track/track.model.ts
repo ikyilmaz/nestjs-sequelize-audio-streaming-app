@@ -5,6 +5,7 @@ import {
     BelongsToMany,
     Column,
     DataType,
+    Default,
     ForeignKey,
     HasMany,
     Length,
@@ -12,8 +13,9 @@ import {
 } from 'sequelize-typescript';
 import Album from '../album/album.model';
 import User from '../user/user.model';
-import FeaturingTrack from '../m2m/featuring/featuring-track/featuring-track.model';
+import TrackFeaturing from '../m2m/featuring/track-featuring/track-featuring.model';
 import TrackComment from '../comment/track-comment/track-comment.model';
+import TrackLike from '../m2m/like/track-like/track-like.model';
 
 @Table({ timestamps: true, paranoid: true })
 export default class Track extends BaseModel<Track> {
@@ -36,6 +38,11 @@ export default class Track extends BaseModel<Track> {
     @AllowNull(false)
     @Column(DataType.SMALLINT)
     duration!: number;
+
+    /** @description Listen Count */
+    @Default(0)
+    @Column(DataType.BIGINT)
+    listenCount: bigint;
 
     /** @description Album's id which one is includes that track */
     @ForeignKey(() => Album)
@@ -65,7 +72,7 @@ export default class Track extends BaseModel<Track> {
 
     /** @description Users on the album */
     @BelongsToMany(() => User, {
-        through: { model: () => FeaturingTrack, unique: false },
+        through: { model: () => TrackFeaturing, unique: false },
     })
     artists!: User[];
 
@@ -74,4 +81,15 @@ export default class Track extends BaseModel<Track> {
     /** @description comments on the track */
     @HasMany(() => TrackComment)
     comments: TrackComment[];
+
+    // --> TRACK LIKES
+    /** @description Users who liked the current track */
+    @BelongsToMany(() => User, {
+        through: {
+            model: () => TrackLike,
+            unique: false,
+        },
+    })
+    usersLiked: User[];
+
 }
