@@ -1,5 +1,6 @@
 import {
     AllowNull,
+    BeforeBulkCreate,
     BeforeSave,
     BeforeUpdate,
     BelongsToMany,
@@ -197,6 +198,12 @@ export default class User extends BaseModel<User> {
     @BeforeSave({ name: 'hash-password-before-save' })
     static async hashPasswordBeforeSave(user: User, _: SaveOptions) {
         user.password = await hash(user.password, 12);
+    }
+
+    /** @description Hook for hashing the password before bulk create */
+    @BeforeBulkCreate({ name: 'hash-password-before-bulk-save' })
+    static async hashPasswordBeforeBulkCreate(users: User[], _: SaveOptions) {
+        for (let user of users) user.password = await hash(user.password, 12);
     }
 
     /** @description Hook for hashing the password if it exists before update */
