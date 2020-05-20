@@ -1,12 +1,4 @@
-import {
-    BadRequestException,
-    Body,
-    Controller,
-    Delete,
-    Param,
-    UploadedFile,
-    UseInterceptors,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Param, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
@@ -20,6 +12,7 @@ import { RemoveArtistsDto } from './dto/remove-artists.dto';
 import { Auth } from '../../../decorators/auth.decorator';
 import { CreateOperation } from '../../../decorators/operations/create.decorator';
 import { UpdateOperation } from '../../../decorators/operations/update.decorator';
+import { DeleteOperation } from '../../../decorators/operations/delete.decorator';
 
 @ApiTags('albums')
 @Controller('albums')
@@ -27,6 +20,26 @@ export class AlbumsRelatedController {
 
     constructor(public $albumsRelatedService: AlbumsRelatedService) {
 
+    }
+
+    /**
+     * --> ADD LIKE
+     * @description adds a like to the specified album
+     * @permissions authenticated users
+     * @statusCodes 204, 400, 404 */
+    @ApiOperation({ summary: 'ADD LIKE' }) @Auth() @CreateOperation('/:id/add-like')
+    async addLike(@Param() params: ParamIdDto) {
+        return SendResponse(await catchAsync(this.$albumsRelatedService.addLike(params.id)));
+    }
+
+    /**
+     * --> REMOVE LIKE
+     * @description removes a like to the specified album
+     * @permissions authenticated users
+     * @statusCodes 204, 400, 404 */
+    @ApiOperation({ summary: 'REMOVE LIKE' }) @Auth() @DeleteOperation('/:id/remove-like')
+    async removeLike(@Param() params: ParamIdDto) {
+        await catchAsync(this.$albumsRelatedService.removeLike(params.id));
     }
 
     /**

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import * as moment from 'moment';
 import * as sharp from 'sharp';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
@@ -10,6 +10,7 @@ import User from '../../../models/user/user.model';
 import { Op } from 'sequelize';
 import AlbumFeaturing from '../../../models/m2m/featuring/album-featuring/album-featuring.model';
 import { RemoveArtistsDto } from './dto/remove-artists.dto';
+import AlbumLike from '../../../models/m2m/like/album-like/album-like.model';
 
 @Injectable()
 export class AlbumsRelatedService {
@@ -68,6 +69,30 @@ export class AlbumsRelatedService {
             if (!album) throw new NotFoundException('not found any album');
 
             await album.$remove('artists', artistIds, { transaction, through: AlbumFeaturing });
+        });
+    }
+
+    addLike(id: string) {
+        return this.$sequelize.transaction(async transaction => {
+            const album = await this.$album.findByPk(id, { transaction });
+
+            if (!album) throw new NotFoundException();
+
+            const like = await album.$add('usersLiked', this.$currentUser.getUser, { transaction, through: AlbumLike });
+
+            if (!like) throw new BadRequestException('already exists');
+
+            return like;
+        });
+    }
+
+    removeLike(id: string) {
+        return this.$sequelize.transaction(async transaction => {
+            const track = await this.$album.findByPk(id, { transaction });
+
+            if (!track) throw new NotFoundException();
+
+            return track.$remove('usersLiked', this.$currentUser.getUser, { transaction, through: AlbumLike });
         });
     }
 
