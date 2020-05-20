@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import Track from '../../models/track/track.model';
 import { limitFields, paginate } from '../../helpers/utils/api-features';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -20,6 +20,7 @@ import { RedisService } from 'nestjs-redis';
 import * as bluebird from 'bluebird';
 import { GETTER_01, SETTER_01 } from '../../redis/redis.constants';
 import { Redis } from 'ioredis';
+import { Sequelize } from 'sequelize-typescript';
 import moment = require('moment');
 
 @Injectable()
@@ -28,8 +29,9 @@ export class TracksService {
     redisSlave: Redis;
 
     constructor(
-        @InjectModel(Track) private $track: typeof Track,
-        private $currentUser: CurrentUser,
+        @InjectModel(Track) private readonly $track: typeof Track,
+        @InjectConnection() private readonly $sequelize: Sequelize,
+        private readonly $currentUser: CurrentUser,
         private readonly $redisService: RedisService,
     ) {
         this.redisMaster = bluebird.promisifyAll(this.$redisService.getClient(SETTER_01));
@@ -37,38 +39,39 @@ export class TracksService {
     }
 
     async getMostListened() {
-        const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_listening_tracks');
+        const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_listened');
 
         if (cachedSource) return cachedSource;
 
         const tracks = await this.$track.findAll({ limit: 25, order: [['listenCount', 'DESC']] });
 
-        await (this.redisMaster as any).setexAsync('tracks:most_listening_tracks', 250, JSON.stringify(tracks));
+        await (this.redisMaster as any).setexAsync('tracks:most_listened', 250, JSON.stringify(tracks));
 
         return tracks;
     }
 
     async getMostLiked() {
-        // const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_liked');
 
-        // if (cachedSource) return cachedSource;
+        const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_liked');
 
-        const tracks = await this.$track.findAndCountAll({
-            limit: 25,
-            include: [
-                {
-                    model: User,
-                    as: 'usersLiked',
-                    attributes: [],
-                    through: { attributes: [] },
-                },
+        if (cachedSource) return cachedSource;
+
+        const tracks = await this.$track.findAll({
+            attributes: {
+                include: [
+                    [
+                        Sequelize.literal(
+                            '(SELECT COUNT(*) FROM "TrackLikes" WHERE "TrackLikes"."trackId" = "Track"."id")',
+                        ), 'likesCount',
+                    ],
+                ],
+            },
+            order: [
+                [Sequelize.literal('"likesCount"'), 'DESC'],
             ],
-            group: 'Track.id',
         });
 
-        // await (this.redisMaster as any).setexAsync('tracks:most_listening_tracks', 250, JSON.stringify(tracks));
-
-        console.log('');
+        await (this.redisMaster as any).setexAsync('tracks:most_liked', 250, JSON.stringify(tracks));
 
         return tracks;
     }
