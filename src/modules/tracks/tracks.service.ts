@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { InjectModel } from '@nestjs/sequelize';
 import Track from '../../models/track/track.model';
 import { limitFields, paginate } from '../../helpers/utils/api-features';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -30,7 +30,6 @@ export class TracksService {
 
     constructor(
         @InjectModel(Track) private readonly $track: typeof Track,
-        @InjectConnection() private readonly $sequelize: Sequelize,
         private readonly $currentUser: CurrentUser,
         private readonly $redisService: RedisService,
     ) {
