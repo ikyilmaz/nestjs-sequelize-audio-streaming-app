@@ -1,11 +1,5 @@
-import {
-    Body,
-    Controller,
-    Param,
-    Query,
-    UploadedFile,
-} from '@nestjs/common';
-import { ApiOperation, ApiTags, } from '@nestjs/swagger';
+import { Body, Controller, Param, Query, UploadedFile } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { AlbumsService } from './albums.service';
 import { SendResponse } from '../../helpers/utils/send-response';
@@ -27,6 +21,15 @@ import { DeleteOperation } from '../../decorators/operations/delete.decorator';
 export class AlbumsController {
     constructor(public $albumsService: AlbumsService) {
 
+    }
+
+    /**
+     * --> GET MOST LIKED ALBUMS
+     * @description get most liked albums
+     * @statusCodes 200, 400*/
+    @ApiOperation({ summary: 'GET MOST LIKED ALBUMS' }) @GetManyOperation('/most-liked')
+    async getMostLikedTracks() {
+        return SendResponse(await this.$albumsService.getMostLiked());
     }
 
     /**

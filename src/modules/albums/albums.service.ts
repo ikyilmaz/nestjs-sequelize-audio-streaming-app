@@ -14,11 +14,50 @@ import { limitAlbumFields } from '../../helpers/field-limiters/album.field-limit
 import { GetOneAlbumQueryDto } from './dto/album-query.dto';
 import { limitPublicUserFields } from '../../helpers/field-limiters/user.field-limiters';
 import { limitTrackFields } from '../../helpers/field-limiters/track.field-limiter';
+import { Sequelize } from 'sequelize-typescript';
+import { RedisService } from 'nestjs-redis';
+import * as bluebird from 'bluebird';
+import { GETTER_01, SETTER_01 } from '../../redis/redis.constants';
+import { Redis } from 'ioredis';
 
 @Injectable()
 export class AlbumsService {
-    constructor(@InjectModel(Album) private $album: typeof Album, private $currentUser: CurrentUser) {
+    redisMaster: Redis;
+    redisSlave: Redis;
 
+    constructor(
+        @InjectModel(Album) private readonly $album: typeof Album,
+        private readonly $currentUser: CurrentUser,
+        private readonly $redisService: RedisService,
+    ) {
+        this.redisMaster = bluebird.promisifyAll(this.$redisService.getClient(SETTER_01));
+        this.redisSlave = bluebird.promisifyAll(this.$redisService.getClient(GETTER_01));
+    }
+
+    async getMostLiked() {
+
+        const cachedSource = await (this.redisSlave as any).getAsync('albums:most_liked');
+
+        if (cachedSource) return cachedSource;
+
+        const albums = await this.$album.findAll({
+            attributes: {
+                include: [
+                    [
+                        Sequelize.literal(
+                            '(SELECT COUNT(*) FROM "AlbumLikes" WHERE "AlbumLikes"."albumId" = "Album"."id")',
+                        ), 'likesCount',
+                    ],
+                ],
+            },
+            order: [
+                [Sequelize.literal('"likesCount"'), 'DESC'],
+            ],
+        });
+
+        await (this.redisMaster as any).setexAsync('albums:most_liked', 250, JSON.stringify(albums));
+
+        return albums;
     }
 
     getMany(query: GetManyTrackQueryDto) {
