@@ -13,7 +13,7 @@ export default class TrackComment extends BaseModel<TrackComment> {
 
     /**@description */
     @Column(DataType.SMALLINT)
-    minuteOfTheMusic: number;
+    second: number;
 
     // --> ASSOCIATIONS
 
