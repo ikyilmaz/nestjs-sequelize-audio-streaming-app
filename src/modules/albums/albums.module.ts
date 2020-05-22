@@ -4,12 +4,10 @@ import { AlbumsService } from './albums.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import Album from '../../models/album/album.model';
 import User from '../../models/user/user.model';
-import { AlbumsRelatedModule } from './albums-related/albums-related.module';
 
 @Module({
     imports: [
-        AlbumsRelatedModule,
-        SequelizeModule.forFeature([User, Album])
+        SequelizeModule.forFeature([User, Album]),
     ],
     controllers: [AlbumsController],
     providers: [AlbumsService],

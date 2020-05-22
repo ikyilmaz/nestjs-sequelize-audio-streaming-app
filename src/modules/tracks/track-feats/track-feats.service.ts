@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { AddArtistsDto } from '../../albums/albums-related/dto/add-artists.dto';
 import { Op } from 'sequelize';
 import TrackFeaturing from '../../../models/m2m/featuring/track-featuring/track-featuring.model';
-import { RemoveArtistsDto } from '../../albums/albums-related/dto/remove-artists.dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import Track from '../../../models/track/track.model';
 import User from '../../../models/user/user.model';
 import { CurrentUser } from '@app/current-user';
+import { RemoveArtistsDto } from '../../albums/album-feats/dto/remove-artists.dto';
+import { AddArtistsDto } from '../../albums/album-feats/dto/add-artists.dto';
 
 @Injectable()
 export class TrackFeatsService {

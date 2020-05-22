@@ -19,6 +19,8 @@ import { RedisService } from 'nestjs-redis';
 import * as bluebird from 'bluebird';
 import { GETTER_01, SETTER_01 } from '../../redis/redis.constants';
 import { Redis } from 'ioredis';
+import * as moment from 'moment';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class AlbumsService {
@@ -105,5 +107,17 @@ export class AlbumsService {
 
     delete(id: string) {
         return this.$album.destroy({ where: { id } });
+    }
+
+    async updateAlbumPhoto(id: string, file: Pick<any, any>) {
+        file.filename = `album-${this.$currentUser.getUser.id}-${moment().unix()}.jpeg`;
+
+        await sharp(file.buffer as Buffer)
+            .resize(500, 500)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`${__dirname}/../public/assets/img/album-images/${file.filename}`);
+
+        return this.$album.update({ photo: file.filename }, { where: { id } });
     }
 }

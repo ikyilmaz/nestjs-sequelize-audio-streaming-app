@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Query, UploadedFile } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Param, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ParamIdDto } from '../../helpers/common-dtos/param-id.dto';
 import { AlbumsService } from './albums.service';
@@ -15,6 +15,8 @@ import { CreateOperation } from '../../decorators/operations/create.decorator';
 import { GetOperation } from '../../decorators/operations/get.decorator';
 import { UpdateOperation } from '../../decorators/operations/update.decorator';
 import { DeleteOperation } from '../../decorators/operations/delete.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as multer from 'multer';
 
 @ApiTags('albums')
 @Controller('albums')
@@ -78,5 +80,24 @@ export class AlbumsController {
     @ApiOperation({ summary: 'DELETE ALBUM' }) @Auth({ isOwner: Album }) @DeleteOperation()
     async delete(@Param() params: ParamIdDto) {
         await catchAsync(this.$albumsService.delete(params.id));
+    }
+
+
+    /**
+     * --> UPDATE ALBUM PHOTO
+     * @description Updates album's photo
+     * @permissions authenticated users
+     * @statusCodes 200, 400 */
+    @ApiOperation({ summary: 'UPDATE ALBUM\'S PHOTO' }) @Auth({ isOwner: Album }) @UpdateOperation('/:id/photo')
+    @UseInterceptors(FileInterceptor('photo', {
+        storage: multer.memoryStorage(),
+        fileFilter: (req, file, cb) => {
+            if (file.mimetype.startsWith('image')) return cb(null, true);
+            cb(new Error('Not an image! Please upload only images.'), false);
+        },
+    }))
+    async updateAlbumPhoto(@Param() params: ParamIdDto, @UploadedFile() file) {
+        if (!file) throw new BadRequestException('please specify the file');
+        return SendResponse(await catchAsync(this.$albumsService.updateAlbumPhoto(params.id, file)));
     }
 }

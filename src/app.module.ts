@@ -1,6 +1,6 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import {   SequelizeModule } from '@nestjs/sequelize';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './modules/users/users.module';
 import { AlbumsModule } from './modules/albums/albums.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -20,6 +20,9 @@ import TrackLike from './models/m2m/like/track-like/track-like.model';
 import { TrackCommentsModule } from './modules/tracks/track-comments/track-comments.module';
 import { TrackLikesModule } from './modules/tracks/track-likes/track-likes.module';
 import { TrackFeatsModule } from './modules/tracks/track-feats/track-feats.module';
+import { AlbumFeatsModule } from './modules/albums/album-feats/album-feats.module';
+import { AlbumLikesModule } from './modules/albums/album-likes/album-likes.module';
+import { AlbumCommentsModule } from './modules/albums/album-comments/album-comments.module';
 
 @Module({
     imports: [
@@ -44,6 +47,9 @@ import { TrackFeatsModule } from './modules/tracks/track-feats/track-feats.modul
         CurrentUserModule,
 
         // !! ALBUMS !!
+        AlbumCommentsModule,
+        AlbumFeatsModule,
+        AlbumLikesModule,
         AlbumsModule,
 
         // !! TRACKS !!
@@ -54,7 +60,7 @@ import { TrackFeatsModule } from './modules/tracks/track-feats/track-feats.modul
     ],
 
     controllers: [
-        SyncController // --> SYNCHRONIZES THE DB AND REDIS
+        SyncController, // --> SYNCHRONIZES THE DB AND REDIS
     ],
 })
 export class AppModule implements OnModuleInit {

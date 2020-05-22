@@ -4,12 +4,12 @@ import { Auth } from '../../../decorators/auth.decorator';
 import Track from '../../../models/track/track.model';
 import { CreateOperation } from '../../../decorators/operations/create.decorator';
 import { ParamIdDto } from '../../../helpers/common-dtos/param-id.dto';
-import { AddArtistsDto } from '../../albums/albums-related/dto/add-artists.dto';
 import { SendResponse } from '../../../helpers/utils/send-response';
 import { catchAsync } from '../../../helpers/utils/catch-async';
 import { DeleteOperation } from '../../../decorators/operations/delete.decorator';
-import { RemoveArtistsDto } from '../../albums/albums-related/dto/remove-artists.dto';
 import { TrackFeatsService } from './track-feats.service';
+import { AddArtistsDto } from '../../albums/album-feats/dto/add-artists.dto';
+import { RemoveArtistsDto } from '../../albums/album-feats/dto/remove-artists.dto';
 
 @Controller('tracks')
 @ApiTags("tracks")
