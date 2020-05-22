@@ -1,6 +1,6 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { InjectConnection, InjectModel, SequelizeModule } from '@nestjs/sequelize';
+import { ConfigModule } from '@nestjs/config';
+import {   SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './modules/users/users.module';
 import { AlbumsModule } from './modules/albums/albums.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -12,28 +12,50 @@ import { SyncController } from './helpers/sync/sync.controller';
 import { CurrentUserModule } from './modules/current-user/current-user.module';
 import { RedisModule } from 'nestjs-redis';
 import { redisModuleOptions } from './redis/redis.config';
-import { Sequelize } from 'sequelize-typescript';
 import User from './models/user/user.model';
 import UserProfile from './models/user-profile/user-profile.model';
 import Album from './models/album/album.model';
 import Track from './models/track/track.model';
 import TrackLike from './models/m2m/like/track-like/track-like.model';
+import { TrackCommentsModule } from './modules/tracks/track-comments/track-comments.module';
+import { TrackLikesModule } from './modules/tracks/track-likes/track-likes.module';
+import { TrackFeatsModule } from './modules/tracks/track-feats/track-feats.module';
 
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
         SequelizeModule.forRootAsync({ useClass: SequelizeConfigService }),
-        SequelizeModule.forFeature([User, UserProfile, Album, Track, TrackLike]), // Sync Controller
+        SequelizeModule.forFeature([User, UserProfile, Album, Track, TrackLike]), // For Sync Controller
         RedisModule.register(redisModuleOptions),
-        UsersModule,
-        AlbumsModule,
-        AuthModule,
+
+        // !! CURRENT USER !! (LIBRARY MODULE)
         CurrentUserRequestModule,
-        CurrentUserModule,
+
+        // !! TOKEN !! (LIBRARY MODULE)
         TokenModule,
+
+        // !! AUTH !!
+        AuthModule,
+
+        // !! USERS !!
+        UsersModule,
+
+        // !! CURRENT USER !!
+        CurrentUserModule,
+
+        // !! ALBUMS !!
+        AlbumsModule,
+
+        // !! TRACKS !!
+        TrackCommentsModule,
+        TrackFeatsModule,
+        TrackLikesModule,
         TracksModule,
     ],
-    controllers: [SyncController],
+
+    controllers: [
+        SyncController // --> SYNCHRONIZES THE DB AND REDIS
+    ],
 })
 export class AppModule implements OnModuleInit {
     constructor() {
