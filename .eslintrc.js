@@ -23,6 +23,7 @@ module.exports = {
         'max-len': 140,
         'arrow-parens': true,
         indent: 4,
+        'no-empty-function': "off",
         'no-empty': 'warn',
     },
 };
