@@ -1,5 +1,5 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { InjectConnection, InjectModel, SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './modules/users/users.module';
 import { AlbumsModule } from './modules/albums/albums.module';
@@ -21,9 +21,9 @@ import TrackLike from './models/m2m/like/track-like/track-like.model';
 
 @Module({
     imports: [
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({ isGlobal: true }),
         SequelizeModule.forRootAsync({ useClass: SequelizeConfigService }),
-        SequelizeModule.forFeature([User, UserProfile, Album, Track, TrackLike]),
+        SequelizeModule.forFeature([User, UserProfile, Album, Track, TrackLike]), // Sync Controller
         RedisModule.register(redisModuleOptions),
         UsersModule,
         AlbumsModule,
@@ -36,14 +36,7 @@ import TrackLike from './models/m2m/like/track-like/track-like.model';
     controllers: [SyncController],
 })
 export class AppModule implements OnModuleInit {
-    constructor(
-        @InjectConnection() private readonly $sequelize: Sequelize,
-        @InjectModel(User) private readonly $user: typeof User,
-        @InjectModel(UserProfile) private readonly $userProfile: typeof UserProfile,
-        @InjectModel(Album) private readonly $album: typeof Album,
-        @InjectModel(Track) private readonly $track: typeof Track,
-        @InjectModel(TrackLike) private readonly $trackLike: typeof TrackLike,
-    ) {
+    constructor() {
     }
 
     async onModuleInit() {
