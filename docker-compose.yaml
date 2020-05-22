@@ -1,0 +1,46 @@
+version: '3'
+services:
+#  audio-streaming-app:
+  #    build: .
+  #    command: npm run start:dev
+  #    volumes:
+  #      - .:/myapp
+  #    ports:
+  #      - "8080:8080"
+  #    depends_on:
+  #      - postgres
+  #      - redis
+  #    links:
+  #      - postgres
+  #      - redis
+
+  postgres:
+    container_name: "audio-streaming-postgres"
+    image: postgres
+    restart: always
+    volumes:
+      - "pg-data:/data"
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_USER: "postgres"
+    ports:
+      - "5432:5432"
+
+  redis:
+    container_name: "audio-streaming-redis"
+    image: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - redis-net
+    volumes:
+      - "redis-data:/data"
+    ports:
+    - "6379:6379"
+
+
+networks:
+  redis-net:
+
+volumes:
+  pg-data:
+  redis-data:
