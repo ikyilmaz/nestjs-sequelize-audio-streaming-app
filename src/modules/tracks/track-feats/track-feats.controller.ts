@@ -1,5 +1,5 @@
 import { Body, Controller, Param } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../../../decorators/auth.decorator';
 import Track from '../../../models/track/track.model';
 import { CreateOperation } from '../../../decorators/operations/create.decorator';
@@ -11,7 +11,8 @@ import { DeleteOperation } from '../../../decorators/operations/delete.decorator
 import { RemoveArtistsDto } from '../../albums/albums-related/dto/remove-artists.dto';
 import { TrackFeatsService } from './track-feats.service';
 
-@Controller('track-feats')
+@Controller('tracks')
+@ApiTags("tracks")
 export class TrackFeatsController {
     constructor(private readonly $trackFeatsService: TrackFeatsService,) {
 

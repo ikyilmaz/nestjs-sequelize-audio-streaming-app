@@ -1,5 +1,5 @@
 import { Body, Controller, Param } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../../../decorators/auth.decorator';
 import { CreateOperation } from '../../../decorators/operations/create.decorator';
 import { ParamIdDto } from '../../../helpers/common-dtos/param-id.dto';
@@ -12,7 +12,8 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { DeleteOperation } from '../../../decorators/operations/delete.decorator';
 import { TrackCommentsService } from './track-comments.service';
 
-@Controller('track-comments')
+@Controller('tracks')
+@ApiTags("tracks")
 export class TrackCommentsController {
 
     constructor(private readonly $trackCommentsService: TrackCommentsService) {

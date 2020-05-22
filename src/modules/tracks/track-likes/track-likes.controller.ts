@@ -1,5 +1,5 @@
 import { Controller, Param } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../../../decorators/auth.decorator';
 import { CreateOperation } from '../../../decorators/operations/create.decorator';
 import { ParamIdDto } from '../../../helpers/common-dtos/param-id.dto';
@@ -9,7 +9,8 @@ import TrackLike from '../../../models/m2m/like/track-like/track-like.model';
 import { DeleteOperation } from '../../../decorators/operations/delete.decorator';
 import { TrackLikesService } from './track-likes.service';
 
-@Controller('track-likes')
+@Controller('tracks')
+@ApiTags("tracks")
 export class TrackLikesController {
     constructor(private readonly $trackLikesService: TrackLikesService) {
     }
