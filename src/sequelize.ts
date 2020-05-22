@@ -14,15 +14,21 @@ import TrackPlaylist from './models/m2m/track-playlist/track-playlist.model';
 import Mood from './models/mood/mood.model';
 import TrackLike from './models/m2m/like/track-like/track-like.model';
 import AlbumLike from './models/m2m/like/album-like/album-like.model';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SequelizeConfigService implements SequelizeOptionsFactory {
+    constructor(private readonly $configService: ConfigService) {}
+
     createSequelizeOptions(): SequelizeModuleOptions {
         return {
             dialect: process.env.DB_DIALECT as 'postgres',
             username: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
             sync: { force: true },
+            retryDelay: 20,
+            retryAttempts: 0,
             models: [
                 User,
                 Friendship,
