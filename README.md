@@ -13,7 +13,8 @@
 
 > ### Technologies implemented:
 
--   [sequelize-typescript](https://github.com/RobinBuschmann/sequelize-typescript) (ORM) + [MySQL](https://www.mysql.com/)
+-   [sequelize-typescript](https://github.com/RobinBuschmann/sequelize-typescript) (ORM) + [PostgreSQL](https://www.postgresql.org/)
+-   [Redis](https://redis.io/)
 -   [JWT](https://jwt.io/)
 -   [Swagger](https://swagger.io/)
 
@@ -31,13 +32,13 @@ $ npm install
 
 > ## Setting up the database for development and test
 
-MySQL database connection options are shown in the following table:
+PostgreSQL database connection options are shown in the following table:
 
 | Option   | Development | Test      |
 | -------- | ----------- | --------- |
 | Host     | localhost   | localhost |
-| Port     | 3306        | 3306      |
-| Username | root        | root      |
+| Port     | 5432        | 5432      |
+| Username | postgres    | postgres  |
 | Database | music       | music     |
 
 <br>
@@ -73,10 +74,10 @@ $ npm run lint
 
 ```
 NODE_ENV=development
-DB_DIALECT=mysql
-DB_PORT=3306
-DB_USER=user
-DATABASE_PASSWORD=pass
+DB_DIALECT=postgres
+DB_PORT=5432
+DB_USER=postgres
+DATABASE_PASSWORD=postgres
 DB_NAME=music
 JWT_SECRET=jwt-secret
 JWT_EXPIRES_IN=90d

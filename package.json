@@ -1,7 +1,7 @@
 {
   "name": "nestjs-sequelize-audio-streaming-app",
   "version": "0.0.1",
-  "description": "",
+  "description": "hobby project",
   "keywords": [
     "nest",
     "nestjs",
@@ -16,12 +16,15 @@
     "jwt",
     "jsonwebtoken",
     "postgres",
-    "postgresql"
+    "postgresql",
+    "nestjs-redis",
+    "redis"
   ],
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prepare": "docker-compose up",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\"",
