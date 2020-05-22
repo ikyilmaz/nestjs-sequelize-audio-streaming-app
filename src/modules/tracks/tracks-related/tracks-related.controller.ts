@@ -14,14 +14,13 @@ import { CreateOperation } from '../../../decorators/operations/create.decorator
 import { DeleteOperation } from '../../../decorators/operations/delete.decorator';
 import { GetOperation } from '../../../decorators/operations/get.decorator';
 import { SendResponse } from '../../../helpers/utils/send-response';
+import { AddCommentDto } from './dto/add-comment.dto';
 
 @Controller('tracks')
 @ApiTags('tracks')
 export class TracksRelatedController {
 
-    constructor(private $tracksRelatedService: TracksRelatedService) {
-
-    }
+    constructor(private $tracksRelatedService: TracksRelatedService) {}
 
     /**
      * --> ADD MANY ARTIST TO TRACK
@@ -61,6 +60,26 @@ export class TracksRelatedController {
     @ApiOperation({ summary: 'REMOVE LIKE' }) @Auth() @DeleteOperation('/:id/remove-like')
     async removeLike(@Param() params: ParamIdDto) {
         await catchAsync(this.$tracksRelatedService.removeLike(params.id));
+    }
+
+    /**
+     * --> ADD COMMENT
+     * @description adds a comment to the specified track
+     * @permissions authenticated users
+     * @statusCodes 204, 400, 404 */
+    @ApiOperation({ summary: 'ADD COMMENT' }) @Auth() @CreateOperation('/:id/add-comment')
+    async addComment(@Param() params: ParamIdDto, @Body() addCommentDto: AddCommentDto) {
+        return SendResponse(await catchAsync(this.$tracksRelatedService.addComment(params.id,addCommentDto)));
+    }
+
+    /**
+     * --> REMOVE COMMENT
+     * @description removes a comment to the specified track
+     * @permissions authenticated users
+     * @statusCodes 204, 400, 404 */
+    @ApiOperation({ summary: 'REMOVE COMMENT' }) @Auth() @DeleteOperation('/:id/remove-comment')
+    async removeComment(@Param() params: ParamIdDto) {
+        await catchAsync(this.$tracksRelatedService.removeComment(params.id));
     }
 
     /**

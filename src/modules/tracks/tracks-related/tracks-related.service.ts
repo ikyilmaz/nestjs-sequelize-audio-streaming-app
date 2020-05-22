@@ -9,14 +9,18 @@ import User from '../../../models/user/user.model';
 import TrackFeaturing from '../../../models/m2m/featuring/track-featuring/track-featuring.model';
 import { RemoveArtistsDto } from '../../albums/albums-related/dto/remove-artists.dto';
 import TrackLike from '../../../models/m2m/like/track-like/track-like.model';
+import TrackComment from '../../../models/comment/track-comment/track-comment.model';
+import { AddCommentDto } from './dto/add-comment.dto';
 
 @Injectable()
 export class TracksRelatedService {
     constructor(
-        @InjectModel(Track) private $track: typeof Track,
-        @InjectModel(User) private $user: typeof User,
-        @InjectConnection() private $sequelize: Sequelize,
-        private $currentUser: CurrentUser,
+        @InjectModel(Track) private readonly $track: typeof Track,
+        @InjectModel(User) private readonly $user: typeof User,
+        @InjectModel(TrackComment) private readonly $trackComment: typeof TrackComment,
+        @InjectModel(TrackLike) private readonly $trackLike: typeof TrackLike,
+        @InjectConnection() private readonly $sequelize: Sequelize,
+        private readonly $currentUser: CurrentUser,
     ) {
 
     }
@@ -85,12 +89,23 @@ export class TracksRelatedService {
     }
 
     removeLike(id: string) {
-        return this.$sequelize.transaction(async transaction => {
-            const track = await this.$track.findByPk(id, { transaction });
+        return this.$trackLike.destroy({
+            where: { ownerId: this.$currentUser.getUser.id, trackId: id },
+        });
+    }
 
-            if (!track) throw new NotFoundException();
+    addComment(id: string, addCommentDto: AddCommentDto) {
+        return this.$trackComment.create({
+            ownerId: this.$currentUser.getUser.id,
+            trackId: id,
+            content: addCommentDto.content,
+            second: addCommentDto.second,
+        });
+    }
 
-            return track.$remove('usersLiked', this.$currentUser.getUser, { transaction, through: TrackLike });
+    removeComment(id: string) {
+        return this.$trackComment.destroy({
+            where: { ownerId: this.$currentUser.getUser.id, trackId: id },
         });
     }
 
