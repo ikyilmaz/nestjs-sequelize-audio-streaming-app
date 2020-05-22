@@ -5,9 +5,11 @@ import { AlbumsModule } from './modules/albums/albums.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AlbumsRelatedModule } from './modules/albums/albums-related/albums-related.module';
 import { TracksModule } from './modules/tracks/tracks.module';
-import { TracksRelatedModule } from './modules/tracks/tracks-related/tracks-related.module';
 import { UsersRelatedModule } from './modules/users/users-related/users-related.module';
 import { CurrentUserModule } from './modules/current-user/current-user.module';
+import { TrackCommentsModule } from './modules/tracks/track-comments/track-comments.module';
+import { TrackFeatsModule } from './modules/tracks/track-feats/track-feats.module';
+import { TrackLikesModule } from './modules/tracks/track-likes/track-likes.module';
 
 export const setupSwagger = (app: INestApplication) => {
     const options = new DocumentBuilder()
@@ -18,17 +20,25 @@ export const setupSwagger = (app: INestApplication) => {
 
     const document = SwaggerModule.createDocument(app, options, {
         include: [
+            // !! AUTH !!
             AuthModule,
 
-            UsersModule,
+            // !! USERS !!
             UsersRelatedModule,
+            UsersModule,
+
+            // !! CURRENT USER !!
             CurrentUserModule,
 
-            AlbumsModule,
+            // !! ALBUMS !!
             AlbumsRelatedModule,
+            AlbumsModule,
 
+            // !! TRACKS !!
+            TrackCommentsModule,
+            TrackFeatsModule,
+            TrackLikesModule,
             TracksModule,
-            TracksRelatedModule,
         ],
     });
 
