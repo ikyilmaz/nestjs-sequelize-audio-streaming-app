@@ -131,4 +131,9 @@ export class TracksService {
     delete(id: string) {
         return this.$track.destroy({ where: { id } });
     }
+
+
+    incrementListenCount(filename: string) {
+        return this.$track.increment('listenCount', { by: 1, where: { track: filename } });
+    }
 }
