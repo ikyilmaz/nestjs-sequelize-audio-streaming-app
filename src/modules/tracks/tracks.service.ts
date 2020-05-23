@@ -22,11 +22,22 @@ import { GETTER_01, SETTER_01 } from '../../redis/redis.constants';
 import { Redis } from 'ioredis';
 import { Sequelize } from 'sequelize-typescript';
 import moment = require('moment');
+import { FindAttributeOptions } from 'sequelize';
 
 @Injectable()
 export class TracksService {
-    redisMaster: Redis;
-    redisSlave: Redis;
+    redisMaster: Redis & Pick<any, any>;
+    redisSlave: Redis & Pick<any, any>;
+
+    QUERY_FOR_LIKES_COUNT = [
+        Sequelize.literal('(SELECT COUNT(*) FROM "TrackLikes" WHERE "TrackLikes"."trackId" = "Track"."id")'),
+        'likesCount',
+    ];
+
+    QUERY_FOR_COMMENTS_COUNT = [
+        Sequelize.literal('(SELECT COUNT(*) FROM "TrackComments" WHERE "TrackComments"."trackId" = "Track"."id")'),
+        'commentsCount',
+    ];
 
     constructor(
         @InjectModel(Track) private readonly $track: typeof Track,
@@ -38,39 +49,37 @@ export class TracksService {
     }
 
     async getMostListened() {
-        const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_listened');
+        const cachedSource = await this.redisSlave.getAsync('tracks:most_listened');
 
         if (cachedSource) return cachedSource;
 
         const tracks = await this.$track.findAll({ limit: 25, order: [['listenCount', 'DESC']] });
 
-        await (this.redisMaster as any).setexAsync('tracks:most_listened', 250, JSON.stringify(tracks));
+        await this.redisMaster.setexAsync('tracks:most_listened', 250, JSON.stringify(tracks));
 
         return tracks;
     }
 
     async getMostLiked() {
 
-        const cachedSource = await (this.redisSlave as any).getAsync('tracks:most_liked');
+        const cachedSource = await this.redisSlave.getAsync('tracks:most_liked');
 
         if (cachedSource) return cachedSource;
 
         const tracks = await this.$track.findAll({
             attributes: {
-                include: [
-                    [
-                        Sequelize.literal(
-                            '(SELECT COUNT(*) FROM "TrackLikes" WHERE "TrackLikes"."trackId" = "Track"."id")',
-                        ), 'likesCount',
-                    ],
-                ],
+                include: [[
+                    Sequelize.literal('(SELECT COUNT(*) FROM "TrackLikes" WHERE "TrackLikes"."trackId" = "Track"."id")'),
+                    'likesCount',
+                ]],
             },
+            limit: 25,
             order: [
                 [Sequelize.literal('"likesCount"'), 'DESC'],
             ],
         });
 
-        await (this.redisMaster as any).setexAsync('tracks:most_liked', 250, JSON.stringify(tracks));
+        await this.redisMaster.setexAsync('tracks:most_liked', 250, JSON.stringify(tracks));
 
         return tracks;
     }
@@ -101,9 +110,15 @@ export class TracksService {
         });
     }
 
-    get(id: string, query: GetOneTrackQueryDto) {
-        return this.$track.findByPk(id, {
-            attributes: limitTrackFields(query.fields),
+    async get(id: string, query: GetOneTrackQueryDto) {
+        const findAttributeOptions: FindAttributeOptions = [...limitTrackFields(query.fields)];
+
+        let likesAndCommentsCount = JSON.parse(await this.redisSlave.getAsync(`album_likes_and_comments_counts:${id}`));
+
+        if (!likesAndCommentsCount) findAttributeOptions.push(this.QUERY_FOR_LIKES_COUNT as any, this.QUERY_FOR_COMMENTS_COUNT as any);
+
+        const track = await this.$track.findByPk(id, {
+            attributes: findAttributeOptions,
             include: [
                 {
                     model: User,
@@ -121,7 +136,23 @@ export class TracksService {
                     attributes: limitAlbumFields(query.albumFields),
                 },
             ],
-        });
+        }) as Track & { likesCount?: number, commentsCount?: number };
+
+        if (!track) return track;
+
+        if (!likesAndCommentsCount && track) {
+            await this.redisMaster.setexAsync(`album_likes_and_comments_counts:${id}`, 10, JSON.stringify({
+                likesCount: track.get('likesCount'), commentsCount: track.get('commentsCount'),
+            }));
+
+            return track;
+        }
+
+        return {
+            ...track.toJSON(),
+            likesCount: likesAndCommentsCount.likesCount,
+            commentsCount: likesAndCommentsCount.commentsCount,
+        };
     }
 
     update(id: string, updateTrackDto: UpdateTrackDto) {

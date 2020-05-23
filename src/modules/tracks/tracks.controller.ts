@@ -124,6 +124,16 @@ export class TracksController {
         return SendResponse(await catchAsync(this.$tracksService.getMany(query)));
     }
 
+
+    /**
+     *  --> GET ONE TRACK
+     *  @description Returns one track
+     *  @statusCodes 200, 404, 400 */
+    @ApiOperation({ summary: 'GET ONE TRACK' }) @GetOperation()
+    async get(@Param() params: ParamIdDto, @Query() query: GetOneTrackQueryDto) {
+        return SendResponse(await catchAsync(this.$tracksService.get(params.id, query)));
+    }
+
     /**
      *  --> CREATE TRACK
      *  @description Creates a track and returns it
@@ -144,15 +154,6 @@ export class TracksController {
         if (!file) throw new BadRequestException('please specify field track');
 
         return SendResponse(await catchAsync(this.$tracksService.create(createTrackDto, file)));
-    }
-
-    /**
-     *  --> GET ONE TRACK
-     *  @description Returns one track
-     *  @statusCodes 200, 404, 400 */
-    @ApiOperation({ summary: 'GET ONE TRACK' }) @GetOperation()
-    async get(@Param() params: ParamIdDto, @Query() query: GetOneTrackQueryDto) {
-        return SendResponse(await catchAsync(this.$tracksService.get(params.id, query)));
     }
 
     /**
