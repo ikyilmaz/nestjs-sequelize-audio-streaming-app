@@ -50,7 +50,7 @@
     "chalk": "^4.0.0",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "moment": "^2.25.3",
     "mp3-duration": "^1.1.0",
     "multer": "^1.4.2",
